@@ -25,7 +25,7 @@ function SmallKPI({ label, value, tone, delta, sub }: {
       </div>
       <div className="min-w-0 overflow-hidden">
         <div className="truncate text-2xl sm:text-2xl lg:text-3xl" style={{ fontFamily: 'var(--font-inter)', fontWeight: 600, color: B.ink, letterSpacing: '-0.03em', lineHeight: 1 }}>{value}</div>
-        {sub && <div className="truncate" style={{ fontFamily: 'var(--font-inter)', fontSize: 11, color: B.ink3, marginTop: 5 }}>{sub}</div>}
+        <div className="truncate" style={{ fontFamily: 'var(--font-inter)', fontSize: 11, color: sub ? B.ink3 : 'transparent', marginTop: 5, minHeight: 14 }}>{sub ?? ' '}</div>
       </div>
     </div>
   )

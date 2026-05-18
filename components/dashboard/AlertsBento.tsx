@@ -17,10 +17,10 @@ export function AlertsBento({ openModal }: Props) {
   const svc = SERVICE_ALERTS
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-3.5 mb-3.5">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-3.5 mb-3.5 items-stretch">
       {/* Critical alerts — repair queue */}
-      <div className="min-w-0 w-full overflow-hidden">
-      <SoftCard padding={26}>
+      <div className="min-w-0 w-full overflow-hidden h-full flex flex-col">
+      <SoftCard padding={26} style={{ height: '100%' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
           <div>
             <h2 style={{ fontFamily: 'var(--font-inter)', fontSize: 18, fontWeight: 600, color: B.ink, margin: 0, letterSpacing: '-0.01em' }}>Incidentes en curso</h2>
@@ -87,8 +87,8 @@ export function AlertsBento({ openModal }: Props) {
       </div>
 
       {/* Service alerts */}
-      <div className="min-w-0 w-full overflow-hidden">
-      <SoftCard padding={26}>
+      <div className="min-w-0 w-full overflow-hidden h-full flex flex-col">
+      <SoftCard padding={26} style={{ height: '100%' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
           <div>
             <h2 style={{ fontFamily: 'var(--font-inter)', fontSize: 18, fontWeight: 600, color: B.ink, margin: 0, letterSpacing: '-0.01em' }}>Próximos servicios</h2>

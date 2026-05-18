@@ -50,7 +50,7 @@ function BranchGridCard({ b, index, onClick }: { b: Branch; index: number; onCli
   const isMain = index === 0
   return (
     <div className="min-w-0 w-full overflow-hidden h-full flex flex-col">
-      <SoftCard padding={isMain ? 26 : 24} onClick={onClick} style={{ height: '100%' }}>
+      <SoftCard padding={isMain ? 26 : 24} onClick={onClick} style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: isMain ? 22 : 18 }}>
           <div>
             {isMain && (
