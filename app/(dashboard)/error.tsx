@@ -10,7 +10,7 @@ interface ErrorProps {
 
 // This boundary only fires for uncaught render errors — query errors are
 // handled inline per-section in DashboardClient and never reach here.
-export default function DashboardError({ error, reset }: ErrorProps) {
+export default function Error({ error, reset }: ErrorProps) {
   useEffect(() => {
     console.error('[dashboard] render error:', error)
   }, [error])
