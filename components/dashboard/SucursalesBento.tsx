@@ -49,8 +49,8 @@ function BranchGridCard({ b, index, onClick }: { b: Branch; index: number; onCli
   const tone = toneFor(b.util)
   const isMain = index === 0
   return (
-    <div className="min-w-0 w-full overflow-hidden">
-      <SoftCard padding={isMain ? 26 : 24} onClick={onClick}>
+    <div className="min-w-0 w-full overflow-hidden h-full flex flex-col">
+      <SoftCard padding={isMain ? 26 : 24} onClick={onClick} style={{ height: '100%' }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: isMain ? 22 : 18 }}>
           <div>
             {isMain && (
@@ -132,7 +132,7 @@ export function SucursalesBento({ openModal }: Props) {
       </div>
 
       {/* Tablet+: 2×2 / 4-col grid */}
-      <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-3.5 mb-3.5">
+      <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-3.5 mb-3.5 items-stretch">
         {branches.map((b, i) => (
           <BranchGridCard key={b.id} b={b} index={i} onClick={() => openModal({ kind: 'branch', branch: b })} />
         ))}
