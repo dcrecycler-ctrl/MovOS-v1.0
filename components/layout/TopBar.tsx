@@ -13,7 +13,7 @@ const PRIMARY_NAV = [
 const SECONDARY_NAV = [
   { label: 'Mantenimiento', href: '/maintenance' },
   { label: 'Contratos',     href: '/contracts' },
-  { label: 'Analítica',     href: '#' },
+  { label: 'Analítica',     href: '/analitica' },
   { label: 'Inteligencia',  href: '#', badge: 'beta' },
 ]
 const ADMIN_NAV = [
