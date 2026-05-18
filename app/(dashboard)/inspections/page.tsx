@@ -25,7 +25,7 @@ export default function InspectionsPage() {
     <div style={{ minHeight: '100vh', background: 'var(--ds-bg)', fontFamily: FONTS.mono }}>
       <AppNav active="Inspecciones" />
 
-      <div className="max-w-[1440px] mx-auto px-4 pt-7 pb-20 md:px-5 md:pb-16 lg:px-9">
+      <div className="max-w-[1400px] mx-auto px-4 pt-7 pb-20 md:px-6 md:pb-16 lg:px-8">
         <PageHeader
           title="INSPECCIONES"
           subtitle="Inspection queue · Damage tracking · Before / after"
@@ -35,10 +35,7 @@ export default function InspectionsPage() {
         />
 
         {/* ROW 1 — KPI Cards */}
-        <div
-          className="grid grid-cols-2 gap-px mb-5 md:grid-cols-3 lg:grid-cols-5"
-          style={{ background: 'var(--ds-border)' }}
-        >
+        <div className="grid grid-cols-2 gap-2.5 mb-5 w-full overflow-hidden md:grid-cols-3 lg:grid-cols-5">
           <KPICard label="Total Fleet"    value="47"   sub="14 vehicles due for inspection" subColor={DS.orange} color={DS.gold}  />
           <KPICard label="Available"      value="18"   sub="Ready to rent now"              subColor={DS.green}  color={DS.green} />
           <KPICard label="Assigned"       value="21"   sub="Currently on rent"              subColor={DS.blue}   color={DS.blue}  />

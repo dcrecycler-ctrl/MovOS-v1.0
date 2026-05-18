@@ -3,7 +3,7 @@
 import { CSSProperties, useState } from 'react'
 import { DS, FONTS } from '@/lib/tokens'
 import { SectionLabel } from '@/components/ui/SectionLabel'
-import type { MockVehicle, MockDocument } from './page'
+import type { MockVehicle, MockDocument } from './mock-data'
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 

@@ -9,6 +9,7 @@ import { SucursalesBento } from '@/components/dashboard/SucursalesBento'
 import { ContractsBento } from '@/components/dashboard/ContractsBento'
 import { SoftModal } from '@/components/dashboard/SoftModal'
 import { ModalPayload } from '@/components/dashboard/types'
+import { BentoBottomNav } from '@/components/ui/BentoBottomNav'
 
 export default function DashboardPage() {
   const [modal, setModal] = useState<ModalPayload | null>(null)
@@ -17,7 +18,7 @@ export default function DashboardPage() {
     <div style={{ minHeight: '100vh', background: B.bg }}>
       <TopBar active="Tablero" />
 
-      <main style={{ maxWidth: 1280, margin: '0 auto', padding: '28px 36px 64px' }}>
+      <main className="w-full max-w-[1400px] mx-auto px-4 md:px-6 lg:px-8 pt-7 pb-24 md:pb-16">
         {/* Page header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 28 }}>
           <div>
@@ -60,6 +61,9 @@ export default function DashboardPage() {
 
       {/* Modal overlay */}
       <SoftModal modal={modal} onClose={() => setModal(null)} />
+
+      {/* Mobile bottom nav */}
+      <BentoBottomNav active="tablero" />
     </div>
   )
 }

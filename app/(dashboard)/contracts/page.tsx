@@ -26,7 +26,7 @@ export default function ContractsPage() {
     <div style={{ minHeight: '100vh', background: 'var(--ds-bg)', fontFamily: FONTS.mono }}>
       <AppNav active="Contratos" />
 
-      <div className="max-w-[1440px] mx-auto px-4 pt-7 pb-20 md:px-5 md:pb-16 lg:px-9">
+      <div className="max-w-[1400px] mx-auto px-4 pt-7 pb-20 md:px-6 md:pb-16 lg:px-8">
         <PageHeader
           title="CONTRATOS"
           subtitle="Long-term contracts · Karve short-term sync · Renewal calendar"
@@ -36,10 +36,7 @@ export default function ContractsPage() {
         />
 
         {/* ROW 1 — 6 KPI Cards */}
-        <div
-          className="grid grid-cols-2 gap-px mb-5 md:grid-cols-3 lg:grid-cols-6"
-          style={{ background: 'var(--ds-border)' }}
-        >
+        <div className="grid grid-cols-2 gap-2.5 mb-5 w-full overflow-hidden md:grid-cols-3 lg:grid-cols-6">
           <KPICard label="Total Contracts"       value="4"    sub="4 contracts registered"           subColor={DS.gold}   color={DS.gold}   />
           <KPICard label="Active"                value="2"    sub="UTE · Antel"                      subColor={DS.green}  color={DS.green}  />
           <KPICard label="Expiring Soon"         value="2"    sub="OSE 42d · Intendencia 28d"        subColor={DS.yellow} color={DS.yellow} />

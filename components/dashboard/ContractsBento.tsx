@@ -33,13 +33,14 @@ export function ContractsBento({ openModal }: Props) {
         <PillButton tone="ghost" size="sm">Ver todos</PillButton>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 14 }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
         {contracts.map(c => {
           const tone = (TONE_MAP[c.color] ?? 'amber') as Tone
           const isUrgent = c.status === 'VENCE PRONTO'
           const isWarning = c.status === 'POR RENOVAR'
 
           return (
+            <div key={c.id} className="min-w-0 w-full overflow-hidden">
             <SoftCard
               key={c.id}
               padding={24}
@@ -76,6 +77,7 @@ export function ContractsBento({ openModal }: Props) {
                 <span style={{ fontFamily: 'var(--font-inter)', fontSize: 12, color: B.blue, fontWeight: 500 }}>Ver →</span>
               </div>
             </SoftCard>
+            </div>
           )
         })}
       </div>

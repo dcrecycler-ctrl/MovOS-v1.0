@@ -123,7 +123,7 @@ export function DashboardClient({
         return { ...prev, loading: false, vehicles, fetchError: null }
       })
     })
-  }, [modal?.loading, modal?.statusFilter])
+  }, [modal?.loading, modal?.statusFilter]) // eslint-disable-line react-hooks/exhaustive-deps
 
   function openModal(title: string, subtitle: string, color: string, statusFilter?: string) {
     setModal({ title, subtitle, color, statusFilter, vehicles: [], loading: true, fetchError: null })
@@ -132,12 +132,12 @@ export function DashboardClient({
   const st = stats.data
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--ds-bg)', fontFamily: FONTS.mono }}>
+    <div style={{ minHeight: '100vh', background: 'var(--ds-bg)', fontFamily: FONTS.mono, overflowX: 'hidden' }}>
       <AppNav active="Tablero" />
 
       {/* ── Page content ────────────────────────────────────────────── */}
       <div
-        className="max-w-[1440px] mx-auto px-4 pt-7 pb-20 md:px-5 md:pb-16 lg:px-9"
+        className="w-full max-w-[1400px] mx-auto px-4 pt-7 pb-20 md:px-6 md:pb-16 lg:px-8 overflow-x-hidden"
       >
         <PageHeader
           title="TABLERO"
@@ -149,10 +149,7 @@ export function DashboardClient({
 
         {/* ── ROW 1 · KPI Cards ──────────────────────────────────────── */}
         {stats.error && <SectionError message={stats.error} />}
-        <div
-          className="grid grid-cols-2 gap-px mb-5 md:grid-cols-3 lg:grid-cols-5"
-          style={{ background: 'var(--ds-border)' }}
-        >
+        <div className="grid grid-cols-2 gap-2.5 mb-5 w-full overflow-hidden md:grid-cols-3 lg:grid-cols-5">
           <KPICard
             label="Total Fleet"
             value={st.total.toLocaleString()}
@@ -191,13 +188,13 @@ export function DashboardClient({
         </div>
 
         {/* ── ROW 2 · Alerts ─────────────────────────────────────────── */}
-        <div className="flex flex-col gap-3.5 mb-5 md:flex-row md:items-start">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5 w-full">
 
           <Panel
             label="Critical Alerts" count={alerts.data.length} color={DS.red}
             footer="VIEW ALL CRITICAL ALERTS →"
             onFooter={() => openModal('CRITICAL ALERTS', 'Open critical alerts', DS.red)}
-            className="w-full md:flex-1"
+            className="min-w-0"
           >
             {alerts.error
               ? <SectionError message={alerts.error} />
@@ -222,7 +219,7 @@ export function DashboardClient({
             label="Service Interval Alerts" count={serviceAlerts.data.length} color={DS.yellow}
             footer="VIEW ALL SERVICE ALERTS →"
             onFooter={() => openModal('SERVICE ALERTS', 'Vehicles past service interval', DS.yellow)}
-            className="w-full md:flex-1"
+            className="min-w-0"
           >
             {serviceAlerts.error
               ? <SectionError message={serviceAlerts.error} />
@@ -250,8 +247,7 @@ export function DashboardClient({
               : locations.data.length === 0
                 ? <EmptyState message="No locations configured" />
                 : <div
-                    className="grid grid-cols-1 gap-px sm:grid-cols-2"
-                    style={{ background: 'var(--ds-border)' }}
+                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2.5 w-full"
                   >
                     {locations.data.map(loc => (
                       <LocationCard key={loc.id} {...loc}
@@ -299,8 +295,7 @@ export function DashboardClient({
             : contracts.data.length === 0
               ? <EmptyState message="No active contracts" />
               : <div
-                  className="grid grid-cols-1 gap-px sm:grid-cols-2"
-                  style={{ background: 'var(--ds-border)' }}
+                  className="grid grid-cols-1 md:grid-cols-2 gap-2.5 w-full"
                 >
                   {contracts.data.map(c => (
                     <ContractCard key={c.id} {...c}

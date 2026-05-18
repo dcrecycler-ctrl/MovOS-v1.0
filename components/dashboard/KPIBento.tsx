@@ -17,12 +17,16 @@ function SmallKPI({ label, value, tone, delta, sub }: {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <span style={{ fontFamily: 'var(--font-inter)', fontSize: 13, color: B.ink3, fontWeight: 500 }}>{label}</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+          <Dot tone={tone} size={5} />
+          <span style={{ fontFamily: 'var(--font-inter)', fontSize: 11, color: B.ink3, fontWeight: 500 }}>{label}</span>
+        </div>
         <SoftBadge tone={tone} size={10}>{delta}</SoftBadge>
       </div>
       <div>
-        <div style={{ fontFamily: 'var(--font-inter)', fontSize: 36, fontWeight: 600, color: B.ink, letterSpacing: '-0.03em', lineHeight: 1 }}>{value}</div>
-        {sub && <div style={{ fontFamily: 'var(--font-inter)', fontSize: 12, color: B.ink3, marginTop: 6 }}>{sub}</div>}
+        <div style={{ fontFamily: 'var(--font-inter)', fontWeight: 600, color: B.ink, letterSpacing: '-0.03em', lineHeight: 1 }}
+          className="text-2xl sm:text-2xl lg:text-3xl">{value}</div>
+        {sub && <div style={{ fontFamily: 'var(--font-inter)', fontSize: 11, color: B.ink3, marginTop: 5 }}>{sub}</div>}
       </div>
     </div>
   )
@@ -32,67 +36,71 @@ export function KPIBento({ openModal }: Props) {
   const util = KPIS.find(k => k.id === 'util')!
 
   return (
-    <div style={{
-      display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)',
-      gridAutoRows: '118px', gap: 14, marginBottom: 14,
-    }}>
-      {/* Hero: Utilización — spans 5 cols × 2 rows */}
-      <SoftCard
-        style={{ gridColumn: 'span 5', gridRow: 'span 2' }}
-        padding={28}
-        big
-        onClick={() => openModal({ kind: 'kpi', kpi: util })}
-      >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <div>
-            <div style={{ fontFamily: 'var(--font-inter)', fontSize: 13, color: B.ink3, fontWeight: 500, marginBottom: 4 }}>Utilización de flota</div>
-            <div style={{ fontFamily: 'var(--font-inter)', fontSize: 12, color: B.ink4 }}>Mes en curso</div>
-          </div>
-          <SoftBadge tone="green">↑ 4.2 pts vs abril</SoftBadge>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginTop: 30 }}>
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
-            <span style={{ fontFamily: 'var(--font-inter)', fontSize: 72, fontWeight: 600, color: B.ink, letterSpacing: '-0.04em', lineHeight: 0.9 }}>73</span>
-            <span style={{ fontFamily: 'var(--font-inter)', fontSize: 28, fontWeight: 500, color: B.ink2, letterSpacing: '-0.02em' }}>%</span>
-          </div>
-          <Sparkline values={KPI_SPARKLINE} color={B.blue} height={56} />
-        </div>
-        <div style={{ marginTop: 18, padding: '14px 16px', background: B.surface2, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <Dot tone="green" />
-            <span style={{ fontFamily: 'var(--font-inter)', fontSize: 13, color: B.ink2 }}>Por encima de la meta trimestral (70%)</span>
-          </div>
-          <span style={{ fontFamily: 'var(--font-inter)', fontSize: 12, color: B.ink3 }}>Ver detalle →</span>
-        </div>
-      </SoftCard>
+    // Mobile: 2-col grid, hero spans both cols. sm+: 5-col with hero 2fr.
+    <div className="grid grid-cols-2 sm:grid-cols-[2fr_1fr_1fr_1fr_1fr] gap-2.5 w-full mb-3.5">
 
-      {/* Row 1: Disponibles (4) + Asignados (3) */}
-      <SoftCard
-        style={{ gridColumn: 'span 4' }}
-        onClick={() => openModal({ kind: 'kpi', kpi: KPIS.find(k => k.id === 'available')! })}
-      >
-        <SmallKPI label="Disponibles" value="142" tone="green" delta="↑ 8 hoy" sub="Listos para renta" />
-      </SoftCard>
-      <SoftCard
-        style={{ gridColumn: 'span 3' }}
-        onClick={() => openModal({ kind: 'kpi', kpi: KPIS.find(k => k.id === 'assigned')! })}
-      >
-        <SmallKPI label="Asignados" value="87" tone="blue" delta="12 vuelven hoy" />
-      </SoftCard>
+      {/* Hero: Utilización — full-width on mobile, 2fr col on sm+ */}
+      <div className="col-span-2 sm:col-span-1 min-w-0 overflow-hidden w-full">
+        <SoftCard
+          padding={20}
+          big
+          onClick={() => openModal({ kind: 'kpi', kpi: util })}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <div>
+              <div style={{ fontFamily: 'var(--font-inter)', fontSize: 13, color: B.ink3, fontWeight: 500, marginBottom: 4 }}>Utilización de flota</div>
+              <div style={{ fontFamily: 'var(--font-inter)', fontSize: 12, color: B.ink4 }}>Mes en curso</div>
+            </div>
+            <SoftBadge tone="green">↑ 4.2 pts vs abril</SoftBadge>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginTop: 16 }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
+              <span
+                className="text-5xl sm:text-4xl lg:text-6xl"
+                style={{ fontFamily: 'var(--font-inter)', fontWeight: 600, color: B.ink, letterSpacing: '-0.04em', lineHeight: 0.9 }}
+              >73</span>
+              <span
+                className="text-xl sm:text-base lg:text-2xl"
+                style={{ fontFamily: 'var(--font-inter)', fontWeight: 500, color: B.ink2, letterSpacing: '-0.02em' }}
+              >%</span>
+            </div>
+            <Sparkline values={KPI_SPARKLINE} color={B.blue} height={40} />
+          </div>
+          {/* Goal chip — hidden on mobile to keep card compact */}
+          <div className="hidden sm:flex" style={{ marginTop: 14, padding: '12px 14px', background: B.surface2, borderRadius: 12, alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <Dot tone="green" />
+              <span style={{ fontFamily: 'var(--font-inter)', fontSize: 12, color: B.ink2 }}>Por encima de la meta trimestral (70%)</span>
+            </div>
+            <span style={{ fontFamily: 'var(--font-inter)', fontSize: 11, color: B.ink3 }}>Ver →</span>
+          </div>
+        </SoftCard>
+      </div>
 
-      {/* Row 2: Flota total (4) + Fuera de servicio (3) */}
-      <SoftCard
-        style={{ gridColumn: 'span 4' }}
-        onClick={() => openModal({ kind: 'kpi', kpi: KPIS.find(k => k.id === 'total')! })}
-      >
-        <SmallKPI label="Flota total" value="248" tone="sky" delta="4 sucursales" sub="Activos en operación" />
-      </SoftCard>
-      <SoftCard
-        style={{ gridColumn: 'span 3' }}
-        onClick={() => openModal({ kind: 'kpi', kpi: KPIS.find(k => k.id === 'oos')! })}
-      >
-        <SmallKPI label="Fuera de servicio" value="19" tone="rose" delta="8 en taller · 6 espera" />
-      </SoftCard>
+      {/* 4 small KPIs — each 1 cell (2-col on mobile = 2×2, 4×1fr on sm+) */}
+      <div className="min-w-0 overflow-hidden w-full">
+        <SoftCard onClick={() => openModal({ kind: 'kpi', kpi: KPIS.find(k => k.id === 'available')! })}>
+          <SmallKPI label="Disponibles" value="142" tone="green" delta="↑ 8 hoy" sub="Listos para renta" />
+        </SoftCard>
+      </div>
+
+      <div className="min-w-0 overflow-hidden w-full">
+        <SoftCard onClick={() => openModal({ kind: 'kpi', kpi: KPIS.find(k => k.id === 'assigned')! })}>
+          <SmallKPI label="Asignados" value="87" tone="blue" delta="12 vuelven hoy" />
+        </SoftCard>
+      </div>
+
+      <div className="min-w-0 overflow-hidden w-full">
+        <SoftCard onClick={() => openModal({ kind: 'kpi', kpi: KPIS.find(k => k.id === 'total')! })}>
+          <SmallKPI label="Flota total" value="248" tone="sky" delta="4 sucursales" sub="Activos" />
+        </SoftCard>
+      </div>
+
+      <div className="min-w-0 overflow-hidden w-full">
+        <SoftCard onClick={() => openModal({ kind: 'kpi', kpi: KPIS.find(k => k.id === 'oos')! })}>
+          <SmallKPI label="Fuera de servicio" value="19" tone="rose" delta="8 taller" />
+        </SoftCard>
+      </div>
     </div>
   )
 }

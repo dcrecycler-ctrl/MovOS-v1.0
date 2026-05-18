@@ -31,6 +31,7 @@ export function KPICard({ label, value, sub, subColor, color = DS.gold, onClick 
 
   return (
     <div
+      className="min-w-0 w-full overflow-hidden"
       style={card}
       onClick={onClick}
       onMouseEnter={() => setHovered(true)}
@@ -47,23 +48,29 @@ export function KPICard({ label, value, sub, subColor, color = DS.gold, onClick 
         {label}
       </div>
 
-      <div style={{
-        fontSize: 44,
-        lineHeight: 1,
-        fontFamily: FONTS.display,
-        color: 'var(--ds-text)',
-        marginBottom: sub ? 6 : 0,
-      }}>
+      <div
+        className="text-3xl md:text-4xl lg:text-5xl"
+        style={{
+          lineHeight: 1,
+          fontFamily: FONTS.display,
+          color: 'var(--ds-text)',
+          marginBottom: sub ? 6 : 0,
+        }}
+      >
         {value}
       </div>
 
       {sub && (
-        <div style={{
-          fontSize: 10,
-          fontFamily: FONTS.mono,
-          color: subColor ?? 'var(--ds-dim)',
-          letterSpacing: '0.04em',
-        }}>
+        <div
+          className="overflow-hidden"
+          style={{
+            fontSize: 10,
+            fontFamily: FONTS.mono,
+            color: subColor ?? 'var(--ds-dim)',
+            letterSpacing: '0.04em',
+            wordBreak: 'break-word',
+          }}
+        >
           {sub}
         </div>
       )}

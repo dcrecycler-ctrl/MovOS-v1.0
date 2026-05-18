@@ -27,7 +27,7 @@ export default function MaintenancePage() {
     <div style={{ minHeight: '100vh', background: 'var(--ds-bg)', fontFamily: FONTS.mono }}>
       <AppNav active="Mantenimiento" />
 
-      <div className="max-w-[1440px] mx-auto px-4 pt-7 pb-20 md:px-5 md:pb-16 lg:px-9">
+      <div className="max-w-[1400px] mx-auto px-4 pt-7 pb-20 md:px-6 md:pb-16 lg:px-8">
         <PageHeader
           title="MANTENIMIENTO"
           subtitle="Repair tickets · Service schedule · Workshop load · Cost analysis"
@@ -37,10 +37,7 @@ export default function MaintenancePage() {
         />
 
         {/* ROW 1 — KPI Cards */}
-        <div
-          className="grid grid-cols-2 gap-px mb-5 md:grid-cols-3 lg:grid-cols-5"
-          style={{ background: 'var(--ds-border)' }}
-        >
+        <div className="grid grid-cols-2 gap-2.5 mb-5 w-full overflow-hidden md:grid-cols-3 lg:grid-cols-5">
           <KPICard label="Total Fleet"    value="47"   sub="8 vehicles in maintenance"  subColor={DS.orange} color={DS.gold}   />
           <KPICard label="Open Tickets"   value="8"    sub="2 critical · 3 major"       subColor={DS.red}    color={DS.red}    />
           <KPICard label="Scheduled"      value="6"    sub="Due within 30 days"         subColor={DS.yellow} color={DS.yellow} />

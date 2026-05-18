@@ -17,8 +17,9 @@ export function AlertsBento({ openModal }: Props) {
   const svc = SERVICE_ALERTS
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '7fr 5fr', gap: 14, marginBottom: 14 }}>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-3.5 mb-3.5">
       {/* Critical alerts — repair queue */}
+      <div className="min-w-0 w-full overflow-hidden">
       <SoftCard padding={26}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
           <div>
@@ -83,8 +84,10 @@ export function AlertsBento({ openModal }: Props) {
           Ver bandeja completa de incidentes →
         </div>
       </SoftCard>
+      </div>
 
       {/* Service alerts */}
+      <div className="min-w-0 w-full overflow-hidden">
       <SoftCard padding={26}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
           <div>
@@ -118,6 +121,7 @@ export function AlertsBento({ openModal }: Props) {
           })}
         </div>
       </SoftCard>
+      </div>
     </div>
   )
 }
