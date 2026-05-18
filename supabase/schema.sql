@@ -1107,3 +1107,56 @@ CREATE POLICY "vehicle_events·operator·read·own·location"
         AND v.location_id = auth_location_id()
     )
   );
+
+
+-- ═══════════════════════════════════════════════════════════════════════════
+-- ADDITIONS — Admin management tables
+-- ═══════════════════════════════════════════════════════════════════════════
+
+-- Extend user_role with inspector and mechanic
+ALTER TYPE user_role ADD VALUE IF NOT EXISTS 'inspector';
+ALTER TYPE user_role ADD VALUE IF NOT EXISTS 'mechanic';
+
+-- Extend vendors table with missing columns
+ALTER TABLE vendors ADD COLUMN IF NOT EXISTS notes   TEXT;
+ALTER TABLE vendors ADD COLUMN IF NOT EXISTS active  BOOLEAN NOT NULL DEFAULT true;
+ALTER TABLE vendors ADD COLUMN IF NOT EXISTS category TEXT;
+
+-- ─── SERVICE PROVIDERS ───────────────────────────────────────────────────────
+-- Authorized dealers, internal workshops, specialists, mobile mechanics.
+-- Distinct from vendors (parts suppliers) — these handle repair work.
+
+CREATE TYPE service_provider_type AS ENUM ('internal', 'authorized_dealer', 'specialist', 'mobile');
+
+CREATE TABLE service_providers (
+  id              UUID                   PRIMARY KEY DEFAULT gen_random_uuid(),
+  name            TEXT                   NOT NULL,
+  type            service_provider_type  NOT NULL DEFAULT 'internal',
+  location_ids    UUID[]                 NOT NULL DEFAULT '{}',
+  speciality      TEXT,
+  contact_name    TEXT,
+  phone           TEXT,
+  email           TEXT,
+  address         TEXT,
+  avg_repair_days NUMERIC(4,1)           CHECK (avg_repair_days >= 0),
+  active          BOOLEAN                NOT NULL DEFAULT true,
+  notes           TEXT,
+  created_at      TIMESTAMPTZ            NOT NULL DEFAULT now()
+);
+
+ALTER TABLE service_providers ENABLE ROW LEVEL SECURITY;
+
+CREATE INDEX idx_sp_type   ON service_providers (type);
+CREATE INDEX idx_sp_active ON service_providers (active) WHERE active = true;
+
+CREATE POLICY "service_providers·admin·all"
+  ON service_providers FOR ALL
+  USING (auth_role() = 'admin');
+
+CREATE POLICY "service_providers·management·read"
+  ON service_providers FOR SELECT
+  USING (auth_role() = 'management');
+
+CREATE POLICY "service_providers·operator·read"
+  ON service_providers FOR SELECT
+  USING (auth_role() = 'operator');

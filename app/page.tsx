@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { B } from '@/lib/tokens'
+import { createClient } from '@/lib/supabase/client'
 import { TopBar } from '@/components/layout/TopBar'
 import { KPIBento } from '@/components/dashboard/KPIBento'
 import { AlertsBento } from '@/components/dashboard/AlertsBento'
@@ -13,6 +14,16 @@ import { BentoBottomNav } from '@/components/ui/BentoBottomNav'
 
 export default function DashboardPage() {
   const [modal, setModal] = useState<ModalPayload | null>(null)
+  const [firstName, setFirstName] = useState('')
+
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
+      if (!user) return
+      const { data } = await supabase.from('profiles').select('full_name').eq('user_id', user.id).single()
+      if (data?.full_name) setFirstName(data.full_name.trim().split(' ')[0])
+    })
+  }, [])
 
   return (
     <div style={{ minHeight: '100vh', background: B.bg }}>
@@ -23,6 +34,11 @@ export default function DashboardPage() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 28 }}>
           <div>
             <h1 style={{ fontFamily: 'var(--font-inter)', fontSize: 26, fontWeight: 600, color: B.ink, margin: 0, letterSpacing: '-0.02em' }}>Tablero</h1>
+            {firstName && (
+              <p style={{ fontFamily: 'var(--font-dm-mono)', fontSize: 13, color: B.ink3, margin: '3px 0 0' }}>
+                Bienvenido, {firstName}
+              </p>
+            )}
             <p style={{ fontFamily: 'var(--font-inter)', fontSize: 14, color: B.ink3, margin: '4px 0 0' }}>
               Mayo 2025 · Flota activa en 4 sucursales Uruguay
             </p>
