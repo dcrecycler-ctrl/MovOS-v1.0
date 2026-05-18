@@ -1,0 +1,133 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Variant C · Bento (production) ─────────────────────────────── */
+:root {
+  /* Surfaces */
+  --bg:        #F2F6FA;
+  --surface:   #FFFFFF;
+  --surface-2: #F0F4FA;
+  --surface-3: #EAF0F6;
+
+  /* Ink */
+  --ink:      #0E1726;
+  --ink-2:    #475569;
+  --ink-3:    #94A3B8;
+  --ink-4:    #CBD5E1;
+  --hairline: rgba(14, 23, 38, 0.05);
+
+  /* Accent palette — muted, low-chroma */
+  --blue:       #6F8AC9;
+  --blue-soft:  #E7ECF6;
+  --green:      #7AAA88;
+  --green-soft: #E5EFE7;
+  --amber:      #D0A364;
+  --amber-soft: #F4EBD7;
+  --rose:       #C68585;
+  --rose-soft:  #F2E2E0;
+  --lilac:      #9C8EC0;
+  --lilac-soft: #ECE8F2;
+  --sky:        #85A7BD;
+  --sky-soft:   #E3ECF1;
+  --ochre:      #8FA0B8;
+  --ochre-soft: #E9EDF2;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(14, 23, 38, 0.04);
+  --shadow-md: 0 1px 2px rgba(14, 23, 38, 0.04), 0 8px 24px rgba(14, 23, 38, 0.05);
+  --shadow-lg: 0 1px 2px rgba(14, 23, 38, 0.04), 0 24px 56px rgba(14, 23, 38, 0.07);
+
+  /* Radii */
+  --radius:    18px;
+  --radius-sm: 12px;
+  --radius-lg: 24px;
+
+  /* Spacing (4px base unit) */
+  --gap-card:    14px;
+  --gap-section: 28px;
+  --pad-card-sm: 16px;
+  --pad-card-md: 22px;
+  --pad-card-lg: 26px;
+  --row-height:  44px;
+  --nav-height:  52px;
+}
+
+/* ─── Dark Spec · reference ──────────────────────────────────────── */
+/* Original MovOS design system. 0px radius, no shadows, no gradients. */
+/* Bebas Neue (display) + DM Mono (body). Apply with data-theme="dark". */
+[data-theme="dark"] {
+  --ds-bg:      #080808;
+  --ds-bg-1:    #0D0D0D;
+  --ds-bg-2:    #111111;
+  --ds-bg-3:    #161616;
+  --ds-border:  #1C1C1C;
+  --ds-border-2:#242424;
+  --ds-text:    #E2D9C8;
+  --ds-dim:     #AAAAAA;
+  --ds-muted:   #555555;
+  --ds-faint:   #3A3A3A;
+  --ds-gold:    #C8A96E;
+  --ds-blue:    #7EB8C9;
+  --ds-purple:  #9B7EC8;
+  --ds-green:   #6DBF8E;
+  --ds-red:     #C97E7E;
+  --ds-orange:  #C9956E;
+  --ds-yellow:  #C9B87E;
+  --ds-lime:    #A8C96E;
+  --ds-slate:   #7E9BC9;
+}
+
+/* Also expose dark spec at :root for cross-theme use in JS/CSS */
+:root {
+  --ds-bg:      #080808;
+  --ds-bg-1:    #0D0D0D;
+  --ds-bg-2:    #111111;
+  --ds-bg-3:    #161616;
+  --ds-border:  #1C1C1C;
+  --ds-border-2:#242424;
+  --ds-text:    #E2D9C8;
+  --ds-dim:     #AAAAAA;
+  --ds-muted:   #555555;
+  --ds-faint:   #3A3A3A;
+  --ds-gold:    #C8A96E;
+  --ds-blue:    #7EB8C9;
+  --ds-purple:  #9B7EC8;
+  --ds-green:   #6DBF8E;
+  --ds-red:     #C97E7E;
+  --ds-orange:  #C9956E;
+  --ds-yellow:  #C9B87E;
+  --ds-lime:    #A8C96E;
+  --ds-slate:   #7E9BC9;
+
+  /* Light Spec · reference */
+  --dl-bg:      #EEF2F7;
+  --dl-bg-1:    #FFFFFF;
+  --dl-bg-2:    #E8EEF5;
+  --dl-bg-3:    #DEE5EE;
+  --dl-border:  #D5DCE5;
+  --dl-border-2:#B5BFCE;
+  --dl-text:    #0E1726;
+  --dl-muted:   #64748B;
+  --dl-gold:    #8F6B2A;
+  --dl-blue:    #3D6C7C;
+  --dl-purple:  #5F417F;
+  --dl-green:   #2E7548;
+  --dl-red:     #9E3636;
+  --dl-orange:  #8E5524;
+  --dl-slate:   #3D5680;
+}
+
+/* ─── Base resets ────────────────────────────────────────────────── */
+* { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+/* ─── Scrollbars ─────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: var(--surface-2); }
+::-webkit-scrollbar-thumb { background: var(--ink-4); border-radius: 9999px; }
+
+/* Dark spec scrollbars (inside [data-theme="dark"] containers) */
+[data-theme="dark"] ::-webkit-scrollbar-track { background: var(--ds-bg-1); }
+[data-theme="dark"] ::-webkit-scrollbar-thumb { background: #222222; }
