@@ -1,6 +1,6 @@
 'use client'
 
-import { DS, FONTS } from '@/lib/tokens'
+import { B } from '@/lib/tokens'
 import { SectionLabel } from '@/components/ui/SectionLabel'
 import { StatusBadge }  from '@/components/ui/StatusBadge'
 import { ActionButton } from '@/components/ui/ActionButton'
@@ -24,8 +24,8 @@ const COMPARISONS: Comparison[] = [
     id: 'cmp1', reservation: 'RES-8812',
     unit: 'U-0142', plate: 'SBQ 3812', model: 'Toyota Hilux 2022',
     pickup: { fuel: 100, odometer: 44820, date: '12 May 09:14', zones: []                          },
-    return: { fuel: 38,  odometer: 46104, date: '18 May 09:02', zones: ['Windshield']               },
-    delta:  { km: 1284, fuelDiff: -62, newDamageZones: ['Windshield'] },
+    return: { fuel: 38,  odometer: 46104, date: '18 May 09:02', zones: ['Parabrisas']              },
+    delta:  { km: 1284, fuelDiff: -62, newDamageZones: ['Parabrisas'] },
     outcome: 'damage',
   },
   {
@@ -39,9 +39,9 @@ const COMPARISONS: Comparison[] = [
   {
     id: 'cmp3', reservation: 'RES-8799',
     unit: 'U-0055', plate: 'SAX 4421', model: 'Renault Duster 2021',
-    pickup: { fuel: 100, odometer: 38200, date: '08 May 10:00', zones: ['Rear bumper (prior)']      },
-    return: { fuel: 22,  odometer: 39815, date: '15 May 16:40', zones: ['Rear bumper (prior)', 'Front left door'] },
-    delta:  { km: 1615, fuelDiff: -78, newDamageZones: ['Front left door'] },
+    pickup: { fuel: 100, odometer: 38200, date: '08 May 10:00', zones: ['Paragolpes trasero (previo)']      },
+    return: { fuel: 22,  odometer: 39815, date: '15 May 16:40', zones: ['Paragolpes trasero (previo)', 'Puerta delantera izq.'] },
+    delta:  { km: 1615, fuelDiff: -78, newDamageZones: ['Puerta delantera izq.'] },
     outcome: 'damage',
   },
 ]
@@ -51,13 +51,13 @@ const COMPARISONS: Comparison[] = [
 function FuelBar({ pct, color }: { pct: number; color: string }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-      <div style={{ flex: 1, height: 4, background: 'var(--ds-bg-3)', position: 'relative', flexShrink: 0 }}>
+      <div style={{ flex: 1, height: 4, background: B.surface3, borderRadius: 9999, position: 'relative', overflow: 'hidden' }}>
         <div style={{
           position: 'absolute', left: 0, top: 0, bottom: 0,
-          width: `${pct}%`, background: color,
+          width: `${pct}%`, background: color, borderRadius: 9999,
         }} />
       </div>
-      <span style={{ fontSize: 10, fontFamily: FONTS.mono, color, width: 30, textAlign: 'right', flexShrink: 0 }}>
+      <span style={{ fontSize: 11, fontFamily: 'var(--font-dm-mono)', fontWeight: 700, color, width: 34, textAlign: 'right', flexShrink: 0 }}>
         {pct}%
       </span>
     </div>
@@ -67,90 +67,91 @@ function FuelBar({ pct, color }: { pct: number; color: string }) {
 // ─── Comparison card ──────────────────────────────────────────────────────────
 
 function ComparisonCard({ cmp }: { cmp: Comparison }) {
-  const accentColor = cmp.outcome === 'damage' ? DS.red : DS.green
-  const returnFuelColor = cmp.return.fuel < 20 ? DS.red : cmp.return.fuel < 40 ? DS.yellow : DS.green
+  const accentColor = cmp.outcome === 'damage' ? B.rose : B.green
+  const returnFuelColor = cmp.return.fuel < 20 ? B.rose : cmp.return.fuel < 40 ? B.amber : B.green
 
   return (
     <div style={{
-      background: 'var(--ds-bg-1)',
+      background: B.surface,
       borderTop: `2px solid ${accentColor}`,
+      borderRadius: '0 0 14px 14px',
       display: 'flex', flexDirection: 'column',
+      border: `1px solid ${B.hairline}`,
+      borderTopWidth: 2,
     }}>
 
       {/* Card header */}
       <div style={{
-        padding: '12px 14px', borderBottom: '1px solid var(--ds-border)',
+        padding: '14px 16px', borderBottom: `1px solid ${B.hairline}`,
         display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start',
       }}>
         <div>
-          <div style={{ fontSize: 16, fontFamily: FONTS.display, color: DS.gold, letterSpacing: '0.06em', lineHeight: 1, marginBottom: 3 }}>
+          <div style={{ fontSize: 16, fontFamily: 'var(--font-dm-mono)', fontWeight: 700, color: B.amber, letterSpacing: '0.04em', lineHeight: 1, marginBottom: 3 }}>
             {cmp.unit}
           </div>
-          <div style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-dim)' }}>
+          <div style={{ fontSize: 12, fontFamily: 'var(--font-inter)', color: B.ink2 }}>
             {cmp.model} · {cmp.plate}
           </div>
-          <div style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)', marginTop: 2 }}>
+          <div style={{ fontSize: 11, fontFamily: 'var(--font-inter)', color: B.ink3, marginTop: 2 }}>
             Res. {cmp.reservation}
           </div>
         </div>
         <StatusBadge
-          label={cmp.outcome === 'damage' ? 'DAMAGE DETECTED' : 'CLEAN RETURN'}
+          label={cmp.outcome === 'damage' ? 'DAÑO DETECTADO' : 'SIN DAÑOS'}
           color={accentColor}
           small
         />
       </div>
 
       {/* Pickup snapshot */}
-      <div style={{ padding: '10px 14px', borderBottom: '1px solid var(--ds-border)' }}>
-        <div style={{ fontSize: 9, fontFamily: FONTS.mono, color: DS.green, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>
-          Pickup · {cmp.pickup.date}
+      <div style={{ padding: '12px 16px', borderBottom: `1px solid ${B.hairline}` }}>
+        <div style={{ fontSize: 11, fontFamily: 'var(--font-inter)', fontWeight: 600, color: B.green, marginBottom: 8 }}>
+          Recogida · {cmp.pickup.date}
         </div>
-        <FuelBar pct={cmp.pickup.fuel} color={DS.green} />
-        <div style={{ fontSize: 10, fontFamily: FONTS.mono, color: 'var(--ds-dim)', marginTop: 5 }}>
-          Odometer: <span style={{ color: 'var(--ds-text)' }}>{cmp.pickup.odometer.toLocaleString()} km</span>
+        <FuelBar pct={cmp.pickup.fuel} color={B.green} />
+        <div style={{ fontSize: 12, fontFamily: 'var(--font-inter)', color: B.ink3, marginTop: 6 }}>
+          Odómetro: <span style={{ color: B.ink, fontWeight: 500 }}>{cmp.pickup.odometer.toLocaleString()} km</span>
         </div>
-        <div style={{ marginTop: 5 }}>
+        <div style={{ marginTop: 6 }}>
           {cmp.pickup.zones.length > 0 ? (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
               {cmp.pickup.zones.map(z => (
                 <span key={z} style={{
-                  fontSize: 8, fontFamily: FONTS.mono, color: DS.yellow,
-                  background: `${DS.yellow}14`, border: `1px solid ${DS.yellow}54`,
-                  padding: '2px 6px', letterSpacing: '0.06em',
+                  fontSize: 10, fontFamily: 'var(--font-inter)', color: B.amber,
+                  background: B.amberSoft, padding: '2px 8px', borderRadius: 9999,
                 }}>
                   {z}
                 </span>
               ))}
             </div>
           ) : (
-            <span style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)' }}>
-              No pre-existing damage
+            <span style={{ fontSize: 11, fontFamily: 'var(--font-inter)', color: B.ink3 }}>
+              Sin daños previos
             </span>
           )}
         </div>
       </div>
 
       {/* Return snapshot */}
-      <div style={{ padding: '10px 14px', borderBottom: '1px solid var(--ds-border)' }}>
-        <div style={{ fontSize: 9, fontFamily: FONTS.mono, color: DS.orange, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>
-          Return · {cmp.return.date}
+      <div style={{ padding: '12px 16px', borderBottom: `1px solid ${B.hairline}` }}>
+        <div style={{ fontSize: 11, fontFamily: 'var(--font-inter)', fontWeight: 600, color: B.amber, marginBottom: 8 }}>
+          Devolución · {cmp.return.date}
         </div>
         <FuelBar pct={cmp.return.fuel} color={returnFuelColor} />
-        <div style={{ fontSize: 10, fontFamily: FONTS.mono, color: 'var(--ds-dim)', marginTop: 5 }}>
-          Odometer: <span style={{ color: 'var(--ds-text)' }}>{cmp.return.odometer.toLocaleString()} km</span>
+        <div style={{ fontSize: 12, fontFamily: 'var(--font-inter)', color: B.ink3, marginTop: 6 }}>
+          Odómetro: <span style={{ color: B.ink, fontWeight: 500 }}>{cmp.return.odometer.toLocaleString()} km</span>
         </div>
-        <div style={{ marginTop: 5 }}>
+        <div style={{ marginTop: 6 }}>
           {cmp.return.zones.length > 0 ? (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
               {cmp.return.zones.map(z => {
                 const isNew = !cmp.pickup.zones.includes(z)
                 return (
                   <span key={z} style={{
-                    fontSize: 8, fontFamily: FONTS.mono,
-                    color:      isNew ? DS.red       : 'var(--ds-dim)',
-                    background: isNew ? `${DS.red}1C` : 'var(--ds-bg-2)',
-                    border:     `1px solid ${isNew ? `${DS.red}54` : 'var(--ds-border)'}`,
-                    padding: '2px 6px', letterSpacing: '0.06em',
+                    fontSize: 10, fontFamily: 'var(--font-inter)',
+                    color:      isNew ? B.rose   : B.ink3,
+                    background: isNew ? B.roseSoft : B.surface2,
+                    padding: '2px 8px', borderRadius: 9999,
                   }}>
                     {isNew ? '▲ ' : ''}{z}
                   </span>
@@ -158,8 +159,8 @@ function ComparisonCard({ cmp }: { cmp: Comparison }) {
               })}
             </div>
           ) : (
-            <span style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)' }}>
-              No damage recorded
+            <span style={{ fontSize: 11, fontFamily: 'var(--font-inter)', color: B.ink3 }}>
+              Sin daños registrados
             </span>
           )}
         </div>
@@ -167,21 +168,21 @@ function ComparisonCard({ cmp }: { cmp: Comparison }) {
 
       {/* Delta */}
       <div style={{
-        padding: '10px 14px', borderBottom: '1px solid var(--ds-border)',
-        background: cmp.outcome === 'damage' ? `${DS.red}08` : 'transparent',
+        padding: '12px 16px', borderBottom: `1px solid ${B.hairline}`,
+        background: cmp.outcome === 'damage' ? B.roseSoft : 'transparent',
       }}>
-        <div style={{ display: 'flex', gap: 20, marginBottom: cmp.delta.newDamageZones.length > 0 ? 8 : 0 }}>
+        <div style={{ display: 'flex', gap: 20, marginBottom: cmp.delta.newDamageZones.length > 0 ? 10 : 0 }}>
           <div>
-            <div style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)', letterSpacing: '0.06em' }}>KM DRIVEN</div>
-            <div style={{ fontSize: 18, fontFamily: FONTS.display, color: DS.gold }}>{cmp.delta.km.toLocaleString()}</div>
+            <div style={{ fontSize: 11, fontFamily: 'var(--font-inter)', color: B.ink3, fontWeight: 500, marginBottom: 2 }}>KM</div>
+            <div style={{ fontSize: 22, fontFamily: 'var(--font-inter)', fontWeight: 700, color: B.amber, letterSpacing: '-0.02em' }}>{cmp.delta.km.toLocaleString()}</div>
           </div>
           <div>
-            <div style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)', letterSpacing: '0.06em' }}>FUEL DIFF</div>
-            <div style={{ fontSize: 18, fontFamily: FONTS.display, color: DS.red }}>{cmp.delta.fuelDiff}%</div>
+            <div style={{ fontSize: 11, fontFamily: 'var(--font-inter)', color: B.ink3, fontWeight: 500, marginBottom: 2 }}>COMBUSTIBLE</div>
+            <div style={{ fontSize: 22, fontFamily: 'var(--font-inter)', fontWeight: 700, color: B.rose, letterSpacing: '-0.02em' }}>{cmp.delta.fuelDiff}%</div>
           </div>
           <div>
-            <div style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)', letterSpacing: '0.06em' }}>NEW DAMAGE</div>
-            <div style={{ fontSize: 18, fontFamily: FONTS.display, color: cmp.delta.newDamageZones.length > 0 ? DS.red : DS.green }}>
+            <div style={{ fontSize: 11, fontFamily: 'var(--font-inter)', color: B.ink3, fontWeight: 500, marginBottom: 2 }}>DAÑOS NUEVOS</div>
+            <div style={{ fontSize: 22, fontFamily: 'var(--font-inter)', fontWeight: 700, letterSpacing: '-0.02em', color: cmp.delta.newDamageZones.length > 0 ? B.rose : B.green }}>
               {cmp.delta.newDamageZones.length}
             </div>
           </div>
@@ -190,9 +191,8 @@ function ComparisonCard({ cmp }: { cmp: Comparison }) {
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
             {cmp.delta.newDamageZones.map(z => (
               <span key={z} style={{
-                fontSize: 8, fontFamily: FONTS.mono, color: DS.red,
-                background: `${DS.red}1C`, border: `1px solid ${DS.red}54`,
-                padding: '2px 6px', letterSpacing: '0.06em',
+                fontSize: 10, fontFamily: 'var(--font-inter)', color: B.rose,
+                background: B.roseSoft, padding: '2px 8px', borderRadius: 9999,
               }}>
                 ▲ {z}
               </span>
@@ -202,8 +202,8 @@ function ComparisonCard({ cmp }: { cmp: Comparison }) {
       </div>
 
       {/* Action */}
-      <div style={{ padding: '10px 14px' }}>
-        <ActionButton label="View Full Comparison" color={DS.gold} secondary onClick={() => {}} />
+      <div style={{ padding: '12px 16px' }}>
+        <ActionButton label="Ver Comparación Completa" color={B.amber} secondary onClick={() => {}} />
       </div>
     </div>
   )
@@ -214,12 +214,12 @@ function ComparisonCard({ cmp }: { cmp: Comparison }) {
 export function BeforeAfterRow() {
   return (
     <div>
-      <div style={{ marginBottom: 12 }}>
-        <SectionLabel label="Before / After Comparison" count={COMPARISONS.length} color={DS.orange} />
+      <div style={{ marginBottom: 14 }}>
+        <SectionLabel label="Comparación Antes / Después" count={COMPARISONS.length} color={B.amber} />
       </div>
       <div
-        className="flex gap-px overflow-x-auto"
-        style={{ background: 'var(--ds-border)', scrollSnapType: 'x mandatory' }}
+        className="flex gap-3.5 overflow-x-auto pb-1"
+        style={{ scrollSnapType: 'x mandatory' }}
       >
         {COMPARISONS.map(cmp => (
           <div

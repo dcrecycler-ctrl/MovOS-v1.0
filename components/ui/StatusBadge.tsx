@@ -1,4 +1,4 @@
-import { FONTS } from '@/lib/tokens'
+import { B } from '@/lib/tokens'
 import { CSSProperties } from 'react'
 
 interface StatusBadgeProps {
@@ -7,19 +7,18 @@ interface StatusBadgeProps {
   small?: boolean
 }
 
-export function StatusBadge({ label, color = 'var(--ds-dim)', small = false }: StatusBadgeProps) {
+export function StatusBadge({ label, color = B.ink3, small = false }: StatusBadgeProps) {
   const style: CSSProperties = {
     display: 'inline-flex',
     alignItems: 'center',
-    padding: small ? '2px 6px' : '3px 8px',
-    fontSize: small ? 9 : 10,
-    fontFamily: FONTS.mono,
-    textTransform: 'uppercase',
-    letterSpacing: '0.08em',
+    padding: small ? '2px 7px' : '3px 9px',
+    fontSize: small ? 10 : 11,
+    fontFamily: 'var(--font-inter)',
+    fontWeight: 600,
+    letterSpacing: '0.02em',
     color,
-    border: `1px solid ${color}54`,
-    background: `${color}1C`,
-    borderRadius: 0,
+    background: color + '18',
+    borderRadius: 9999,
     whiteSpace: 'nowrap',
   }
 

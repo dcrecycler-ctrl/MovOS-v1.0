@@ -1,5 +1,3 @@
-'use client'
-
 import { B } from '@/lib/tokens'
 import { TopBar } from '@/components/layout/TopBar'
 import { BentoBottomNav } from '@/components/ui/BentoBottomNav'
@@ -8,28 +6,6 @@ import { TodaySummary }    from './TodaySummary'
 import { BeforeAfterRow }  from './BeforeAfterRow'
 import { DamageRecords }   from './DamageRecords'
 
-const bLight = {
-  '--ds-bg':       B.bg,
-  '--ds-bg-1':     B.surface,
-  '--ds-bg-2':     B.surface2,
-  '--ds-bg-3':     B.surface3,
-  '--ds-border':   'rgba(14,23,38,0.07)',
-  '--ds-border-2': 'rgba(14,23,38,0.12)',
-  '--ds-text':     B.ink,
-  '--ds-dim':      B.ink2,
-  '--ds-muted':    B.ink3,
-  '--ds-faint':    B.ink4,
-  '--ds-gold':     B.amber,
-  '--ds-blue':     B.blue,
-  '--ds-purple':   B.lilac,
-  '--ds-green':    B.green,
-  '--ds-red':      B.rose,
-  '--ds-orange':   B.amber,
-  '--ds-yellow':   B.amber,
-  '--ds-lime':     B.green,
-  '--ds-slate':    B.sky,
-} as unknown as React.CSSProperties
-
 export default function InspectionsPage() {
   return (
     <div style={{ minHeight: '100vh', background: B.bg }}>
@@ -37,13 +13,11 @@ export default function InspectionsPage() {
       <div className="max-w-[1400px] mx-auto px-4 pt-7 pb-24 md:px-6 md:pb-16 lg:px-8">
 
         {/* Page header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 28 }}>
-          <div>
-            <h1 style={{ fontFamily: 'var(--font-inter)', fontSize: 26, fontWeight: 600, color: B.ink, margin: 0, letterSpacing: '-0.02em' }}>Inspecciones</h1>
-            <p style={{ fontFamily: 'var(--font-inter)', fontSize: 14, color: B.ink3, margin: '4px 0 0' }}>
-              Cola de inspección · Registro de daños · Antes / después
-            </p>
-          </div>
+        <div style={{ marginBottom: 28 }}>
+          <h1 style={{ fontFamily: 'var(--font-inter)', fontSize: 26, fontWeight: 600, color: B.ink, margin: 0, letterSpacing: '-0.02em' }}>Inspecciones</h1>
+          <p style={{ fontFamily: 'var(--font-inter)', fontSize: 14, color: B.ink3, margin: '4px 0 0' }}>
+            Cola de inspección · Registro de daños · Antes / después
+          </p>
         </div>
 
         {/* KPI row */}
@@ -55,15 +29,14 @@ export default function InspectionsPage() {
           <StatCard label="Fuera de servicio" value="8"   sub="3 mant · 5 insp."    color={B.rose}  />
         </div>
 
-        {/* Sub-components — bLight overrides DS CSS variables to light theme */}
-        <div style={bLight}>
-          <div className="flex flex-col gap-3.5 mb-5 items-start lg:flex-row">
-            <div className="w-full lg:flex-[3]"><InspectionQueue /></div>
-            <div className="w-full lg:flex-[2]"><TodaySummary /></div>
-          </div>
-          <div style={{ marginBottom: 20 }}><BeforeAfterRow /></div>
-          <DamageRecords />
+        <div className="flex flex-col gap-3.5 mb-5 items-start lg:flex-row">
+          <div className="w-full lg:flex-[3]"><InspectionQueue /></div>
+          <div className="w-full lg:flex-[2]"><TodaySummary /></div>
         </div>
+
+        <div style={{ marginBottom: 20 }}><BeforeAfterRow /></div>
+
+        <DamageRecords />
       </div>
       <BentoBottomNav />
     </div>

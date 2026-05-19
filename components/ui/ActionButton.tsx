@@ -1,5 +1,5 @@
 'use client'
-import { FONTS } from '@/lib/tokens'
+import { B } from '@/lib/tokens'
 import { CSSProperties, MouseEvent, useState } from 'react'
 
 interface ActionButtonProps {
@@ -13,7 +13,7 @@ interface ActionButtonProps {
 
 export function ActionButton({
   label,
-  color = 'var(--ds-gold)',
+  color = B.amber,
   full = false,
   secondary = false,
   danger = false,
@@ -21,7 +21,7 @@ export function ActionButton({
 }: ActionButtonProps) {
   const [hovered, setHovered] = useState(false)
 
-  const resolvedColor = danger ? 'var(--ds-red)' : secondary ? 'var(--ds-dim)' : color
+  const resolvedColor = danger ? B.rose : secondary ? B.ink3 : color
 
   const style: CSSProperties = {
     display: 'inline-flex',
@@ -30,14 +30,14 @@ export function ActionButton({
     width: full ? '100%' : undefined,
     padding: '0 16px',
     height: 32,
-    fontSize: 10,
-    fontFamily: FONTS.mono,
-    textTransform: 'uppercase',
-    letterSpacing: '0.1em',
+    fontSize: 12,
+    fontFamily: 'var(--font-inter)',
+    fontWeight: 500,
+    letterSpacing: '0.01em',
     color: resolvedColor,
-    background: hovered ? `${resolvedColor}54` : `${resolvedColor}38`,
-    border: `1px solid ${resolvedColor}`,
-    borderRadius: 0,
+    background: hovered ? resolvedColor + '28' : resolvedColor + '14',
+    border: `1px solid ${resolvedColor}40`,
+    borderRadius: 8,
     cursor: 'pointer',
     transition: 'background 0.12s',
     outline: 'none',

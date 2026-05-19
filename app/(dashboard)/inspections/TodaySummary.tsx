@@ -1,6 +1,6 @@
 'use client'
 
-import { DS, FONTS } from '@/lib/tokens'
+import { B } from '@/lib/tokens'
 import { SectionLabel } from '@/components/ui/SectionLabel'
 import { StatusBadge }  from '@/components/ui/StatusBadge'
 
@@ -15,12 +15,12 @@ interface CompletedInsp {
 }
 
 const STATS = [
-  { label: 'Total Today',  value: '12',  color: DS.gold   },
-  { label: 'Completed',    value: '8',   color: DS.green  },
-  { label: 'Pending',      value: '4',   color: DS.yellow },
-  { label: 'Damage Found', value: '2',   color: DS.red    },
-  { label: 'Avg Time',     value: '18m', color: DS.blue   },
-  { label: 'Clean Rate',   value: '75%', color: DS.green  },
+  { label: 'Total Hoy',     value: '12',  color: B.amber },
+  { label: 'Completadas',   value: '8',   color: B.green  },
+  { label: 'Pendientes',    value: '4',   color: B.amber  },
+  { label: 'Con Daño',      value: '2',   color: B.rose   },
+  { label: 'Tiempo Prom.',  value: '18m', color: B.blue   },
+  { label: 'Sin Daño',      value: '75%', color: B.green  },
 ]
 
 const RECENT: CompletedInsp[] = [
@@ -32,30 +32,35 @@ const RECENT: CompletedInsp[] = [
 ]
 
 const TYPE_COLOR: Record<InspType, string> = {
-  pickup:   DS.green,
-  return:   DS.orange,
-  periodic: DS.purple,
+  pickup:   B.green,
+  return:   B.amber,
+  periodic: B.lilac,
 }
 
 // ─── TodaySummary ─────────────────────────────────────────────────────────────
 
 export function TodaySummary() {
   return (
-    <div style={{ border: '1px solid var(--ds-border)', background: 'var(--ds-bg-1)' }}>
+    <div style={{ background: B.surface, borderRadius: 16, border: `1px solid ${B.hairline}`, overflow: 'hidden', boxShadow: B.shadowSm }}>
 
       {/* Header */}
-      <div style={{ padding: '14px 14px 12px', borderBottom: '1px solid var(--ds-border)' }}>
-        <SectionLabel label="Today's Summary" color={DS.green} />
+      <div style={{ padding: '18px 20px 16px', borderBottom: `1px solid ${B.hairline}` }}>
+        <SectionLabel label="Resumen del Día" color={B.green} />
       </div>
 
       {/* Stats grid — 3 columns × 2 rows */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 1, background: 'var(--ds-border)', borderBottom: '1px solid var(--ds-border)' }}>
-        {STATS.map(s => (
-          <div key={s.label} style={{ background: 'var(--ds-bg-1)', padding: '14px 16px' }}>
-            <div style={{ fontSize: 26, fontFamily: FONTS.display, color: s.color, lineHeight: 1, marginBottom: 4 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', borderBottom: `1px solid ${B.hairline}` }}>
+        {STATS.map((s, idx) => (
+          <div key={s.label} style={{
+            background: B.surface,
+            padding: '16px 18px',
+            borderRight: (idx + 1) % 3 !== 0 ? `1px solid ${B.hairline}` : 'none',
+            borderTop: idx >= 3 ? `1px solid ${B.hairline}` : 'none',
+          }}>
+            <div style={{ fontSize: 28, fontFamily: 'var(--font-inter)', fontWeight: 700, color: s.color, lineHeight: 1, marginBottom: 4, letterSpacing: '-0.02em' }}>
               {s.value}
             </div>
-            <div style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+            <div style={{ fontSize: 11, fontFamily: 'var(--font-inter)', color: B.ink3, fontWeight: 500 }}>
               {s.label}
             </div>
           </div>
@@ -63,38 +68,39 @@ export function TodaySummary() {
       </div>
 
       {/* Section label */}
-      <div style={{ padding: '10px 14px', borderBottom: '1px solid var(--ds-border)' }}>
-        <div style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-          Last 5 Completed
-        </div>
+      <div style={{ padding: '12px 20px', borderBottom: `1px solid ${B.hairline}` }}>
+        <span style={{ fontSize: 11, fontFamily: 'var(--font-inter)', fontWeight: 600, color: B.ink3, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+          Últimas 5 Completadas
+        </span>
       </div>
 
       {/* Recent list */}
       {RECENT.map((insp, i) => (
         <div key={insp.id} style={{
-          display: 'grid', gridTemplateColumns: '72px 88px 72px 1fr auto',
+          display: 'grid', gridTemplateColumns: '72px 90px 80px 1fr auto',
           alignItems: 'center', gap: '0 10px',
-          padding: '9px 14px',
-          borderBottom: i < RECENT.length - 1 ? '1px solid var(--ds-border)' : 'none',
-          borderLeft: `2px solid ${insp.outcome === 'damage' ? DS.red : 'transparent'}`,
+          padding: '10px 20px',
+          borderBottom: i < RECENT.length - 1 ? `1px solid ${B.hairline}` : 'none',
+          borderLeft: `2px solid ${insp.outcome === 'damage' ? B.rose : 'transparent'}`,
+          background: B.surface,
         }}>
-          <span style={{ fontSize: 11, fontFamily: FONTS.mono, color: DS.gold }}>
+          <span style={{ fontSize: 12, fontFamily: 'var(--font-dm-mono)', fontWeight: 700, color: B.amber }}>
             {insp.unit}
           </span>
-          <span style={{ fontSize: 10, fontFamily: FONTS.mono, color: 'var(--ds-dim)' }}>
+          <span style={{ fontSize: 11, fontFamily: 'var(--font-dm-mono)', color: B.ink2 }}>
             {insp.plate}
           </span>
           <StatusBadge label={insp.type.toUpperCase()} color={TYPE_COLOR[insp.type]} small />
-          <span style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          <span style={{ fontSize: 12, fontFamily: 'var(--font-inter)', color: B.ink3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {insp.inspector}
           </span>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)' }}>
+            <span style={{ fontSize: 11, fontFamily: 'var(--font-dm-mono)', color: B.ink3 }}>
               {insp.time}
             </span>
             <StatusBadge
-              label={insp.outcome === 'damage' ? 'DMG' : 'OK'}
-              color={insp.outcome === 'damage' ? DS.red : DS.green}
+              label={insp.outcome === 'damage' ? 'DAÑO' : 'OK'}
+              color={insp.outcome === 'damage' ? B.rose : B.green}
               small
             />
           </div>

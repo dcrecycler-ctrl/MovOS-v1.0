@@ -1,4 +1,4 @@
-import { DS, FONTS } from '@/lib/tokens'
+import { B } from '@/lib/tokens'
 import { CSSProperties } from 'react'
 
 interface SectionLabelProps {
@@ -7,33 +7,30 @@ interface SectionLabelProps {
   color?: string
 }
 
-export function SectionLabel({ label, count, color = DS.gold }: SectionLabelProps) {
+export function SectionLabel({ label, count, color = B.amber }: SectionLabelProps) {
   const wrap: CSSProperties = {
     display: 'flex',
     alignItems: 'center',
     gap: 10,
-    paddingLeft: 10,
-    borderLeft: `3px solid ${color}`,
   }
 
   const text: CSSProperties = {
-    fontSize: 9,
-    fontFamily: FONTS.mono,
-    textTransform: 'uppercase',
-    letterSpacing: '0.1em',
-    color: 'var(--ds-dim)',
+    fontSize: 15,
+    fontFamily: 'var(--font-inter)',
+    fontWeight: 600,
+    letterSpacing: '-0.01em',
+    color: B.ink,
   }
 
   const badge: CSSProperties = {
     marginLeft: 'auto',
-    fontSize: 9,
-    fontFamily: FONTS.mono,
-    letterSpacing: '0.06em',
+    fontSize: 11,
+    fontFamily: 'var(--font-inter)',
+    fontWeight: 600,
     color: color,
-    background: `${color}1C`,
-    border: `1px solid ${color}54`,
-    padding: '1px 6px',
-    borderRadius: 0,
+    background: color + '18',
+    padding: '2px 8px',
+    borderRadius: 9999,
   }
 
   return (
