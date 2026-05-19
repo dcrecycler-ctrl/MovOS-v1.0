@@ -689,6 +689,495 @@ function Section6({ onSave }: { onSave: () => void }) {
   )
 }
 
+// ─── Section Vendors ─────────────────────────────────────────────────────────
+const V_DATA = [
+  { id: 1, name: 'AutoPartes Uruguay',   branch: 'Pocitos',        category: 'Frenos',      contact: 'Roberto Silva',  phone: '+598 99 234 567', email: 'rsilva@autopartes.uy',   orders: 3, active: true  },
+  { id: 2, name: 'NeumáticosUY',        branch: 'Centro',         category: 'Neumáticos',  contact: 'María Fuentes',  phone: '+598 98 345 678', email: 'mfuentes@neumaticos.uy', orders: 1, active: true  },
+  { id: 3, name: 'Electro-Auto',        branch: 'Punta del Este', category: 'Eléctrico',   contact: 'Juan Méndez',    phone: '+598 97 456 789', email: 'jmendez@electroauto.uy', orders: 0, active: true  },
+  { id: 4, name: 'Carrocería Ideal',    branch: 'Pocitos',        category: 'Carrocería',  contact: 'Ana Torres',     phone: '+598 96 567 890', email: 'atorres@carroceria.uy',  orders: 2, active: true  },
+  { id: 5, name: 'Lubricantes del Sur', branch: 'Colonia',        category: 'Lubricantes', contact: 'Pedro Gómez',    phone: '+598 95 678 901', email: 'pgomez@lubricantes.uy',  orders: 0, active: true  },
+  { id: 6, name: 'Filtros & Más',       branch: 'Centro',         category: 'Filtros',     contact: 'Carmen López',   phone: '+598 94 789 012', email: 'clopez@filtros.uy',      orders: 1, active: true  },
+  { id: 7, name: 'Suspensiones Pro',    branch: 'Pocitos',        category: 'Suspensión',  contact: 'Diego Martínez', phone: '+598 93 890 123', email: 'dmartinez@suspro.uy',    orders: 0, active: false },
+  { id: 8, name: 'Auto Total',          branch: 'Punta del Este', category: 'Otros',       contact: 'Laura Díaz',     phone: '+598 92 901 234', email: 'ldiaz@autototal.uy',     orders: 0, active: true  },
+]
+
+const V_ACTIVE_ORDERS = [
+  { unit: 'ABC-1234', part: 'Pastillas de freno',  qty: 4, urgency: 'Alta',   status: 'En camino',  date: '15 may' },
+  { unit: 'XYZ-5678', part: 'Filtro de aceite',    qty: 2, urgency: 'Normal', status: 'Pendiente',  date: '16 may' },
+  { unit: 'DEF-9012', part: 'Kit frenos traseros', qty: 1, urgency: 'Alta',   status: 'Confirmado', date: '14 may' },
+]
+
+const V_HISTORY = [
+  { date: '10 may', parts: 'Pastillas × 8',       total: '$4,200', ticket: 'TK-0234', status: 'Entregado' },
+  { date: '02 may', parts: 'Kit frenos × 2',       total: '$2,800', ticket: 'TK-0198', status: 'Entregado' },
+  { date: '24 abr', parts: 'Discos traseros × 4', total: '$5,600', ticket: 'TK-0172', status: 'Entregado' },
+  { date: '15 abr', parts: 'Pastillas × 4',        total: '$2,100', ticket: 'TK-0154', status: 'Entregado' },
+  { date: '08 abr', parts: 'Kit completo',          total: '$9,400', ticket: 'TK-0139', status: 'Entregado' },
+]
+
+const CAT_CLR: Record<string, string> = {
+  Filtros: B.ink3, Frenos: B.rose, Neumáticos: B.blue, Eléctrico: B.amber,
+  Carrocería: B.lilac, Lubricantes: B.green, Suspensión: B.sky, Otros: B.ochre,
+}
+
+type VendorRow = typeof V_DATA[0]
+
+function SectionVendors({ onSave }: { onSave: () => void }) {
+  const [vendors, setVendors] = useState(V_DATA)
+  const [search, setSearch]   = useState('')
+  const [branchF, setBranchF] = useState('Todas')
+  const [catF, setCatF]       = useState('Todas')
+  const [showAdd, setShowAdd] = useState(false)
+  const [detail, setDetail]   = useState<VendorRow | null>(null)
+  const [newV, setNewV] = useState({ name: '', branches: [] as string[], category: 'Frenos', contact: '', phone: '', email: '', address: '', notes: '', active: true })
+
+  const BRANCHES = ['Pocitos', 'Centro', 'Punta del Este', 'Colonia']
+  const CATS = ['Filtros', 'Frenos', 'Neumáticos', 'Eléctrico', 'Carrocería', 'Lubricantes', 'Suspensión', 'Otros']
+
+  const filtered = vendors.filter(v =>
+    (branchF === 'Todas' || v.branch === branchF) &&
+    (catF === 'Todas' || v.category === catF) &&
+    (!search || v.name.toLowerCase().includes(search.toLowerCase()) || v.category.toLowerCase().includes(search.toLowerCase()))
+  )
+
+  const totalActive = vendors.filter(v => v.active).length
+  const totalOrders = vendors.reduce((s, v) => s + v.orders, 0)
+  const topBranch = BRANCHES.reduce((a, b) =>
+    vendors.filter(v => v.branch === b).length > vendors.filter(v => v.branch === a).length ? b : a, BRANCHES[0])
+
+  function Pill({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
+    return (
+      <button onClick={onClick} style={{
+        padding: '5px 12px', borderRadius: 99, cursor: 'pointer', border: 'none', whiteSpace: 'nowrap',
+        background: active ? B.ink : B.surface2, color: active ? '#fff' : B.ink2,
+        fontFamily: 'var(--font-inter)', fontSize: 12, fontWeight: active ? 600 : 400,
+      }}>{label}</button>
+    )
+  }
+
+  return (
+    <SectionCard
+      title="Directorio de Vendors"
+      accent={B.amber}
+      icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>}
+      onSave={onSave}
+    >
+      <p style={{ fontFamily: 'var(--font-inter)', fontSize: 12, color: B.ink3, margin: '-10px 0 16px' }}>Proveedores de repuestos por sucursal</p>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 8, marginBottom: 18 }}>
+        {[
+          { label: 'Total vendors',   value: String(vendors.length), color: B.amber },
+          { label: 'Activos',         value: String(totalActive),    color: B.green },
+          { label: 'Top sucursal',    value: topBranch,              color: B.blue  },
+          { label: 'Pedidos activos', value: String(totalOrders),    color: B.rose  },
+        ].map(s => (
+          <div key={s.label} style={{ background: B.surface2, border: `1px solid ${B.hairline}`, borderTop: `2px solid ${s.color}`, borderRadius: 10, padding: '10px 10px 8px', textAlign: 'center' }}>
+            <div style={{ fontFamily: 'var(--font-bebas-neue)', fontSize: 20, color: s.color, lineHeight: 1 }}>{s.value}</div>
+            <div style={{ fontFamily: 'var(--font-dm-mono)', fontSize: 9, color: B.ink3, marginTop: 3 }}>{s.label}</div>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 8 }}>
+        {['Todas', ...BRANCHES].map(b => <Pill key={b} label={b} active={branchF === b} onClick={() => setBranchF(b)} />)}
+      </div>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 10 }}>
+        {['Todas', ...CATS].map(c => <Pill key={c} label={c} active={catF === c} onClick={() => setCatF(c)} />)}
+      </div>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+        <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Buscar nombre o tipo de repuesto…" style={{ ...iStyle, flex: 1 }} />
+        <button onClick={() => setShowAdd(true)} style={{ padding: '9px 16px', borderRadius: 8, background: B.amber, color: '#fff', border: 'none', fontFamily: 'var(--font-inter)', fontSize: 12, fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' }}>+ Agregar vendor</button>
+      </div>
+
+      <div style={{ border: `1px solid ${B.hairline}`, borderRadius: 10, overflow: 'hidden' }}>
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 640 }}>
+            <thead>
+              <tr style={{ background: B.surface2 }}>
+                {['Nombre', 'Sucursal', 'Categoría', 'Contacto', 'Teléfono', 'Pedidos', 'Acciones'].map(h => (
+                  <th key={h} style={{ fontFamily: 'var(--font-dm-mono)', fontSize: 10, color: B.ink3, fontWeight: 600, textAlign: 'left', padding: '8px 12px', borderBottom: `1px solid ${B.hairline}`, whiteSpace: 'nowrap' }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((v, i) => (
+                <tr key={v.id} style={{ borderBottom: `1px solid ${B.hairline}`, background: i % 2 === 0 ? 'transparent' : B.surface2, opacity: v.active ? 1 : 0.5 }}>
+                  <td style={{ padding: '9px 12px' }}>
+                    <div style={{ fontFamily: 'var(--font-inter)', fontSize: 13, fontWeight: 600, color: B.ink }}>{v.name}</div>
+                    {!v.active && <span style={{ fontFamily: 'var(--font-dm-mono)', fontSize: 9, color: B.ink4 }}>Inactivo</span>}
+                  </td>
+                  <td style={{ padding: '9px 12px', fontFamily: 'var(--font-dm-mono)', fontSize: 11, color: B.ink2 }}>{v.branch}</td>
+                  <td style={{ padding: '9px 12px' }}>
+                    <span style={{ fontFamily: 'var(--font-dm-mono)', fontSize: 10, fontWeight: 600, color: CAT_CLR[v.category] ?? B.ink3, background: (CAT_CLR[v.category] ?? B.ink3) + '18', padding: '2px 7px', borderRadius: 4 }}>{v.category}</span>
+                  </td>
+                  <td style={{ padding: '9px 12px', fontFamily: 'var(--font-dm-mono)', fontSize: 11, color: B.ink2 }}>{v.contact}</td>
+                  <td style={{ padding: '9px 12px', fontFamily: 'var(--font-dm-mono)', fontSize: 11, color: B.ink3, whiteSpace: 'nowrap' }}>{v.phone}</td>
+                  <td style={{ padding: '9px 12px', textAlign: 'center' }}>
+                    {v.orders > 0 ? <span style={{ fontFamily: 'var(--font-bebas-neue)', fontSize: 18, color: B.rose }}>{v.orders}</span> : <span style={{ color: B.ink4 }}>—</span>}
+                  </td>
+                  <td style={{ padding: '9px 10px' }}>
+                    <div style={{ display: 'flex', gap: 4 }}>
+                      {([['Ver', B.blue], ['Editar', B.ink3], ['Pedido', B.green]] as [string, string][]).map(([lbl, clr]) => (
+                        <button key={lbl} onClick={() => lbl === 'Ver' && setDetail(v)} style={{ padding: '3px 8px', borderRadius: 5, border: 'none', cursor: 'pointer', background: clr + '18', color: clr, fontFamily: 'var(--font-inter)', fontSize: 10, fontWeight: 600 }}>{lbl}</button>
+                      ))}
+                      <button onClick={() => setVendors(p => p.map(x => x.id === v.id ? { ...x, active: !x.active } : x))} style={{ padding: '3px 8px', borderRadius: 5, border: 'none', cursor: 'pointer', background: B.rose + '18', color: B.rose, fontFamily: 'var(--font-inter)', fontSize: 10, fontWeight: 600 }}>
+                        {v.active ? 'Desact.' : 'Activar'}
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {showAdd && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(14,23,38,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }} onClick={() => setShowAdd(false)}>
+          <div style={{ background: B.surface, borderRadius: B.radiusLg, maxWidth: 560, width: '100%', maxHeight: '90vh', overflowY: 'auto', boxShadow: B.shadowLg }} onClick={e => e.stopPropagation()}>
+            <div style={{ padding: '18px 24px', borderBottom: `1px solid ${B.hairline}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ fontFamily: 'var(--font-inter)', fontSize: 16, fontWeight: 700, color: B.ink, margin: 0 }}>Agregar Vendor</h3>
+              <button onClick={() => setShowAdd(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: B.ink3, fontSize: 20, lineHeight: 1 }}>✕</button>
+            </div>
+            <div style={{ padding: '18px 24px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                <div style={{ gridColumn: '1/-1' }}><FieldRow label="Nombre del proveedor *"><input style={iStyle} value={newV.name} onChange={e => setNewV(p => ({ ...p, name: e.target.value }))} placeholder="Nombre comercial" /></FieldRow></div>
+                <div style={{ gridColumn: '1/-1' }}>
+                  <FL>Sucursal(es) *</FL>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                    {BRANCHES.map(b => (
+                      <button key={b} onClick={() => setNewV(p => ({ ...p, branches: p.branches.includes(b) ? p.branches.filter(x => x !== b) : [...p.branches, b] }))} style={{ padding: '5px 12px', borderRadius: 99, cursor: 'pointer', border: 'none', background: newV.branches.includes(b) ? B.ink : B.surface2, color: newV.branches.includes(b) ? '#fff' : B.ink2, fontFamily: 'var(--font-inter)', fontSize: 12, fontWeight: newV.branches.includes(b) ? 600 : 400 }}>{b}</button>
+                    ))}
+                  </div>
+                </div>
+                <FieldRow label="Categoría *"><select style={iStyle} value={newV.category} onChange={e => setNewV(p => ({ ...p, category: e.target.value }))}>{CATS.map(c => <option key={c}>{c}</option>)}</select></FieldRow>
+                <FieldRow label="Contacto principal *"><input style={iStyle} value={newV.contact} onChange={e => setNewV(p => ({ ...p, contact: e.target.value }))} /></FieldRow>
+                <FieldRow label="Teléfono *"><input style={iStyle} value={newV.phone} onChange={e => setNewV(p => ({ ...p, phone: e.target.value }))} placeholder="+598 99…" /></FieldRow>
+                <FieldRow label="Email"><input style={iStyle} value={newV.email} onChange={e => setNewV(p => ({ ...p, email: e.target.value }))} /></FieldRow>
+                <div style={{ gridColumn: '1/-1' }}><FieldRow label="Dirección"><input style={iStyle} value={newV.address} onChange={e => setNewV(p => ({ ...p, address: e.target.value }))} /></FieldRow></div>
+                <div style={{ gridColumn: '1/-1' }}><FieldRow label="Notas"><textarea rows={2} style={{ ...iStyle, resize: 'none' }} value={newV.notes} onChange={e => setNewV(p => ({ ...p, notes: e.target.value }))} /></FieldRow></div>
+                <div style={{ gridColumn: '1/-1', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0' }}>
+                  <span style={{ fontFamily: 'var(--font-inter)', fontSize: 13, color: B.ink }}>Activo</span>
+                  <Toggle on={newV.active} onChange={v => setNewV(p => ({ ...p, active: v }))} />
+                </div>
+              </div>
+            </div>
+            <div style={{ padding: '14px 24px', borderTop: `1px solid ${B.hairline}`, display: 'flex', gap: 8 }}>
+              <button onClick={() => { setVendors(p => [...p, { id: Date.now(), branch: newV.branches[0] ?? 'Pocitos', ...newV, orders: 0 }]); setShowAdd(false) }} style={{ padding: '10px 24px', borderRadius: 8, background: B.amber, color: '#fff', border: 'none', fontFamily: 'var(--font-inter)', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>GUARDAR VENDOR</button>
+              <button onClick={() => setShowAdd(false)} style={{ padding: '10px 16px', borderRadius: 8, background: 'transparent', color: B.ink3, border: `1px solid ${B.hairline}`, fontFamily: 'var(--font-inter)', fontSize: 13, cursor: 'pointer' }}>Cancelar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {detail && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(14,23,38,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }} onClick={() => setDetail(null)}>
+          <div style={{ background: B.surface, borderRadius: B.radiusLg, maxWidth: 720, width: '100%', maxHeight: '90vh', overflowY: 'auto', boxShadow: B.shadowLg }} onClick={e => e.stopPropagation()}>
+            <div style={{ padding: '18px 24px', borderBottom: `1px solid ${B.hairline}`, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <h3 style={{ fontFamily: 'var(--font-inter)', fontSize: 17, fontWeight: 700, color: B.ink, margin: 0 }}>{detail.name}</h3>
+                  <span style={{ fontFamily: 'var(--font-dm-mono)', fontSize: 10, fontWeight: 700, color: CAT_CLR[detail.category] ?? B.ink3, background: (CAT_CLR[detail.category] ?? B.ink3) + '18', padding: '2px 8px', borderRadius: 4 }}>{detail.category}</span>
+                </div>
+                <div style={{ fontFamily: 'var(--font-dm-mono)', fontSize: 12, color: B.ink3, marginTop: 4 }}>{detail.branch} · {detail.phone} · {detail.email}</div>
+              </div>
+              <button onClick={() => setDetail(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: B.ink3, fontSize: 20 }}>✕</button>
+            </div>
+            <div style={{ padding: '18px 24px' }}>
+              <div style={{ fontFamily: 'var(--font-inter)', fontSize: 13, fontWeight: 600, color: B.ink, marginBottom: 10 }}>Pedidos activos</div>
+              <div style={{ border: `1px solid ${B.hairline}`, borderRadius: 10, overflow: 'hidden', marginBottom: 22 }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                  <thead><tr style={{ background: B.surface2 }}>{['Unidad','Parte','Cant.','Urgencia','Estado','Fecha'].map(h => <th key={h} style={{ fontFamily: 'var(--font-dm-mono)', fontSize: 10, color: B.ink3, fontWeight: 600, textAlign: 'left', padding: '7px 12px', borderBottom: `1px solid ${B.hairline}` }}>{h}</th>)}</tr></thead>
+                  <tbody>
+                    {V_ACTIVE_ORDERS.map((o, i) => (
+                      <tr key={i} style={{ borderBottom: `1px solid ${B.hairline}` }}>
+                        <td style={{ padding: '8px 12px', fontFamily: 'var(--font-dm-mono)', fontSize: 11, color: B.ink2, fontWeight: 600 }}>{o.unit}</td>
+                        <td style={{ padding: '8px 12px', fontFamily: 'var(--font-inter)', fontSize: 12, color: B.ink }}>{o.part}</td>
+                        <td style={{ padding: '8px 12px', fontFamily: 'var(--font-dm-mono)', fontSize: 11, color: B.ink2, textAlign: 'center' }}>{o.qty}</td>
+                        <td style={{ padding: '8px 12px' }}><span style={{ fontFamily: 'var(--font-dm-mono)', fontSize: 10, color: o.urgency === 'Alta' ? B.rose : B.ink3, background: (o.urgency === 'Alta' ? B.rose : B.ink3) + '18', padding: '2px 6px', borderRadius: 4 }}>{o.urgency}</span></td>
+                        <td style={{ padding: '8px 12px', fontFamily: 'var(--font-dm-mono)', fontSize: 11, color: B.ink2 }}>{o.status}</td>
+                        <td style={{ padding: '8px 12px', fontFamily: 'var(--font-dm-mono)', fontSize: 11, color: B.ink3 }}>{o.date}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div style={{ fontFamily: 'var(--font-inter)', fontSize: 13, fontWeight: 600, color: B.ink, marginBottom: 10 }}>Historial de pedidos</div>
+              <div style={{ border: `1px solid ${B.hairline}`, borderRadius: 10, overflow: 'hidden', marginBottom: 18 }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                  <thead><tr style={{ background: B.surface2 }}>{['Fecha','Repuestos','Total','Ticket','Estado'].map(h => <th key={h} style={{ fontFamily: 'var(--font-dm-mono)', fontSize: 10, color: B.ink3, fontWeight: 600, textAlign: 'left', padding: '7px 12px', borderBottom: `1px solid ${B.hairline}` }}>{h}</th>)}</tr></thead>
+                  <tbody>
+                    {V_HISTORY.map((h, i) => (
+                      <tr key={i} style={{ borderBottom: `1px solid ${B.hairline}`, background: i % 2 === 0 ? 'transparent' : B.surface2 }}>
+                        <td style={{ padding: '8px 12px', fontFamily: 'var(--font-dm-mono)', fontSize: 11, color: B.ink3 }}>{h.date}</td>
+                        <td style={{ padding: '8px 12px', fontFamily: 'var(--font-inter)', fontSize: 12, color: B.ink }}>{h.parts}</td>
+                        <td style={{ padding: '8px 12px', fontFamily: 'var(--font-dm-mono)', fontSize: 11, color: B.ink2, fontWeight: 600 }}>{h.total}</td>
+                        <td style={{ padding: '8px 12px', fontFamily: 'var(--font-dm-mono)', fontSize: 11, color: B.blue }}>{h.ticket}</td>
+                        <td style={{ padding: '8px 12px' }}><span style={{ fontFamily: 'var(--font-dm-mono)', fontSize: 10, color: B.green, background: B.greenSoft, padding: '2px 6px', borderRadius: 4 }}>{h.status}</span></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <button style={{ padding: '10px 22px', borderRadius: 8, background: B.amber, color: '#fff', border: 'none', fontFamily: 'var(--font-inter)', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>+ Nuevo pedido</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </SectionCard>
+  )
+}
+
+// ─── Section Talleres ─────────────────────────────────────────────────────────
+const T_DATA = [
+  { id: 1, name: 'Taller Central MovOS', type: 'Interno',           branch: 'Centro',        specialty: 'Mecánica general',     current: 3, avgDays: 3.2, contact: 'Ing. Roberto P.', phone: '+598 2900 1001', active: true  },
+  { id: 2, name: 'Toyota Dealer UY',     type: 'Dealer Autorizado', branch: 'Pocitos',        specialty: 'Toyota / Lexus',        current: 2, avgDays: 5.1, contact: 'Carlos M.',        phone: '+598 2710 2002', active: true  },
+  { id: 3, name: 'Electro-Mec',          type: 'Especialista',      branch: 'Punta del Este', specialty: 'Eléctrico / Híbrido',   current: 1, avgDays: 6.8, contact: 'Ana R.',           phone: '+598 4244 3003', active: true  },
+  { id: 4, name: 'Móvil Express',        type: 'Mecánico Móvil',    branch: 'Todas',          specialty: 'Diagnóstico / Auxilio', current: 0, avgDays: 0.5, contact: 'Miguel T.',        phone: '+598 99 100 200', active: true  },
+  { id: 5, name: 'Ford Service UY',      type: 'Dealer Autorizado', branch: 'Colonia',        specialty: 'Ford / Lincoln',        current: 0, avgDays: 4.5, contact: 'Laura F.',         phone: '+598 4522 5005', active: true  },
+  { id: 6, name: 'Taller Norte',         type: 'Interno',           branch: 'Pocitos',        specialty: 'Mecánica / Planchado',  current: 0, avgDays: 2.8, contact: 'Pedro G.',         phone: '+598 2710 6006', active: false },
+]
+
+const T_CURRENT_VEHICLES = [
+  { unit: 'ABC-1234', model: 'Toyota Hilux',    ticket: 'TK-0291', stage: 'En reparación',  days: 3, cost: '$6,200' },
+  { unit: 'GHI-3456', model: 'Mitsubishi L200', ticket: 'TK-0285', stage: 'En diagnóstico', days: 1, cost: 'TBD'    },
+  { unit: 'JKL-7890', model: 'Nissan Frontier',  ticket: 'TK-0280', stage: 'Control calidad',days: 5, cost: '$4,800' },
+]
+
+const T_HISTORY = [
+  { date: '05 may', unit: 'XYZ-5678', issue: 'Frenos traseros',       days: 4, cost: '$3,800',  result: 'Resuelto' },
+  { date: '28 abr', unit: 'MNO-1234', issue: 'Motor / Distribución',  days: 7, cost: '$12,500', result: 'Resuelto' },
+  { date: '20 abr', unit: 'PQR-5678', issue: 'Transmisión manual',    days: 5, cost: '$8,200',  result: 'Resuelto' },
+  { date: '12 abr', unit: 'STU-9012', issue: 'Sistema eléctrico',     days: 3, cost: '$2,400',  result: 'Resuelto' },
+  { date: '04 abr', unit: 'VWX-3456', issue: 'Suspensión delantera',  days: 2, cost: '$3,100',  result: 'Resuelto' },
+]
+
+const TYPE_CLR: Record<string, string> = {
+  'Interno': B.amber, 'Dealer Autorizado': B.blue, 'Especialista': B.lilac, 'Mecánico Móvil': B.green,
+}
+
+type TallerRow = typeof T_DATA[0]
+
+function SectionTalleres({ onSave }: { onSave: () => void }) {
+  const [providers, setProviders] = useState(T_DATA)
+  const [branchF, setBranchF]     = useState('Todas')
+  const [typeF, setTypeF]         = useState('Todos')
+  const [showAdd, setShowAdd]     = useState(false)
+  const [detail, setDetail]       = useState<TallerRow | null>(null)
+  const [newT, setNewT] = useState({ name: '', type: 'Interno', branches: [] as string[], specialty: '', contact: '', phone: '', email: '', address: '', avgDays: '', notes: '', active: true })
+
+  const BRANCHES = ['Pocitos', 'Centro', 'Punta del Este', 'Colonia']
+  const TYPES    = ['Interno', 'Dealer Autorizado', 'Especialista', 'Mecánico Móvil']
+
+  const filtered = providers.filter(p =>
+    (branchF === 'Todas' || p.branch === branchF || p.branch === 'Todas') &&
+    (typeF === 'Todos' || p.type === typeF)
+  )
+
+  const totalCurrent = providers.reduce((s, p) => s + p.current, 0)
+  const avgDaysAll   = (providers.reduce((s, p) => s + p.avgDays, 0) / providers.length).toFixed(1)
+
+  function Pill({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
+    return (
+      <button onClick={onClick} style={{
+        padding: '5px 12px', borderRadius: 99, cursor: 'pointer', border: 'none', whiteSpace: 'nowrap',
+        background: active ? B.ink : B.surface2, color: active ? '#fff' : B.ink2,
+        fontFamily: 'var(--font-inter)', fontSize: 12, fontWeight: active ? 600 : 400,
+      }}>{label}</button>
+    )
+  }
+
+  return (
+    <SectionCard
+      title="Talleres y Servicios"
+      accent={B.lilac}
+      icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76Z"/></svg>}
+      onSave={onSave}
+    >
+      <p style={{ fontFamily: 'var(--font-inter)', fontSize: 12, color: B.ink3, margin: '-10px 0 16px' }}>Dealers autorizados, talleres internos y especialistas</p>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 8, marginBottom: 18 }}>
+        {[
+          { label: 'Total talleres',     value: String(providers.length), color: B.amber },
+          { label: 'En taller ahora',    value: String(totalCurrent),     color: B.rose  },
+          { label: 'Tiempo promedio',    value: avgDaysAll + ' d',        color: B.blue  },
+          { label: 'Costo prom./ticket', value: '$8,450',                 color: B.amber },
+        ].map(s => (
+          <div key={s.label} style={{ background: B.surface2, border: `1px solid ${B.hairline}`, borderTop: `2px solid ${s.color}`, borderRadius: 10, padding: '10px 10px 8px', textAlign: 'center' }}>
+            <div style={{ fontFamily: 'var(--font-bebas-neue)', fontSize: 20, color: s.color, lineHeight: 1 }}>{s.value}</div>
+            <div style={{ fontFamily: 'var(--font-dm-mono)', fontSize: 9, color: B.ink3, marginTop: 3 }}>{s.label}</div>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 8 }}>
+        {['Todas', ...BRANCHES].map(b => <Pill key={b} label={b} active={branchF === b} onClick={() => setBranchF(b)} />)}
+      </div>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 12 }}>
+        {['Todos', ...TYPES].map(t => <Pill key={t} label={t} active={typeF === t} onClick={() => setTypeF(t)} />)}
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 14 }}>
+        <button onClick={() => setShowAdd(true)} style={{ padding: '9px 16px', borderRadius: 8, background: B.lilac, color: '#fff', border: 'none', fontFamily: 'var(--font-inter)', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>+ Agregar taller</button>
+      </div>
+
+      <div style={{ border: `1px solid ${B.hairline}`, borderRadius: 10, overflow: 'hidden' }}>
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 700 }}>
+            <thead>
+              <tr style={{ background: B.surface2 }}>
+                {['Nombre','Tipo','Sucursal','Especialidad','Actuales','t̄ días','Contacto','Acciones'].map(h => (
+                  <th key={h} style={{ fontFamily: 'var(--font-dm-mono)', fontSize: 10, color: B.ink3, fontWeight: 600, textAlign: 'left', padding: '8px 10px', borderBottom: `1px solid ${B.hairline}`, whiteSpace: 'nowrap' }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((p, i) => (
+                <tr key={p.id} style={{ borderBottom: `1px solid ${B.hairline}`, background: i % 2 === 0 ? 'transparent' : B.surface2, opacity: p.active ? 1 : 0.5 }}>
+                  <td style={{ padding: '9px 10px' }}>
+                    <div style={{ fontFamily: 'var(--font-inter)', fontSize: 12, fontWeight: 600, color: B.ink }}>{p.name}</div>
+                    {!p.active && <span style={{ fontFamily: 'var(--font-dm-mono)', fontSize: 9, color: B.ink4 }}>Inactivo</span>}
+                  </td>
+                  <td style={{ padding: '9px 10px' }}>
+                    <span style={{ fontFamily: 'var(--font-dm-mono)', fontSize: 10, fontWeight: 600, color: TYPE_CLR[p.type] ?? B.ink3, background: (TYPE_CLR[p.type] ?? B.ink3) + '18', padding: '2px 7px', borderRadius: 4, whiteSpace: 'nowrap' }}>{p.type}</span>
+                  </td>
+                  <td style={{ padding: '9px 10px', fontFamily: 'var(--font-dm-mono)', fontSize: 11, color: B.ink2 }}>{p.branch}</td>
+                  <td style={{ padding: '9px 10px', fontFamily: 'var(--font-inter)', fontSize: 12, color: B.ink2 }}>{p.specialty}</td>
+                  <td style={{ padding: '9px 10px', textAlign: 'center' }}>
+                    {p.current > 0 ? <span style={{ fontFamily: 'var(--font-bebas-neue)', fontSize: 18, color: B.rose }}>{p.current}</span> : <span style={{ color: B.ink4 }}>—</span>}
+                  </td>
+                  <td style={{ padding: '9px 10px', fontFamily: 'var(--font-dm-mono)', fontSize: 11, color: B.ink2, textAlign: 'center' }}>{p.avgDays}</td>
+                  <td style={{ padding: '9px 10px', fontFamily: 'var(--font-dm-mono)', fontSize: 11, color: B.ink3 }}>{p.contact}</td>
+                  <td style={{ padding: '9px 8px' }}>
+                    <div style={{ display: 'flex', gap: 4 }}>
+                      {([['Ver', B.blue], ['Editar', B.ink3], ['Vehículos', B.green]] as [string,string][]).map(([lbl, clr]) => (
+                        <button key={lbl} onClick={() => lbl === 'Ver' && setDetail(p)} style={{ padding: '3px 7px', borderRadius: 5, border: 'none', cursor: 'pointer', background: clr + '18', color: clr, fontFamily: 'var(--font-inter)', fontSize: 10, fontWeight: 600 }}>{lbl}</button>
+                      ))}
+                      <button onClick={() => setProviders(prev => prev.map(x => x.id === p.id ? { ...x, active: !x.active } : x))} style={{ padding: '3px 7px', borderRadius: 5, border: 'none', cursor: 'pointer', background: B.rose + '18', color: B.rose, fontFamily: 'var(--font-inter)', fontSize: 10, fontWeight: 600 }}>
+                        {p.active ? 'Desact.' : 'Activar'}
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {showAdd && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(14,23,38,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }} onClick={() => setShowAdd(false)}>
+          <div style={{ background: B.surface, borderRadius: B.radiusLg, maxWidth: 580, width: '100%', maxHeight: '90vh', overflowY: 'auto', boxShadow: B.shadowLg }} onClick={e => e.stopPropagation()}>
+            <div style={{ padding: '18px 24px', borderBottom: `1px solid ${B.hairline}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ fontFamily: 'var(--font-inter)', fontSize: 16, fontWeight: 700, color: B.ink, margin: 0 }}>Agregar Taller</h3>
+              <button onClick={() => setShowAdd(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: B.ink3, fontSize: 20, lineHeight: 1 }}>✕</button>
+            </div>
+            <div style={{ padding: '18px 24px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                <div style={{ gridColumn: '1/-1' }}><FieldRow label="Nombre *"><input style={iStyle} value={newT.name} onChange={e => setNewT(p => ({ ...p, name: e.target.value }))} placeholder="Nombre del taller" /></FieldRow></div>
+                <FieldRow label="Tipo *"><select style={iStyle} value={newT.type} onChange={e => setNewT(p => ({ ...p, type: e.target.value }))}>{TYPES.map(t => <option key={t}>{t}</option>)}</select></FieldRow>
+                <FieldRow label="Especialidad / marcas *"><input style={iStyle} value={newT.specialty} onChange={e => setNewT(p => ({ ...p, specialty: e.target.value }))} placeholder="Toyota, Eléctrico…" /></FieldRow>
+                <div style={{ gridColumn: '1/-1' }}>
+                  <FL>Sucursal(es) que atiende *</FL>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                    {[...BRANCHES, 'Todas'].map(b => (
+                      <button key={b} onClick={() => setNewT(p => ({ ...p, branches: p.branches.includes(b) ? p.branches.filter(x => x !== b) : [...p.branches, b] }))} style={{ padding: '5px 12px', borderRadius: 99, cursor: 'pointer', border: 'none', background: newT.branches.includes(b) ? B.ink : B.surface2, color: newT.branches.includes(b) ? '#fff' : B.ink2, fontFamily: 'var(--font-inter)', fontSize: 12, fontWeight: newT.branches.includes(b) ? 600 : 400 }}>{b}</button>
+                    ))}
+                  </div>
+                </div>
+                <FieldRow label="Contacto principal *"><input style={iStyle} value={newT.contact} onChange={e => setNewT(p => ({ ...p, contact: e.target.value }))} /></FieldRow>
+                <FieldRow label="Teléfono *"><input style={iStyle} value={newT.phone} onChange={e => setNewT(p => ({ ...p, phone: e.target.value }))} /></FieldRow>
+                <FieldRow label="Email"><input style={iStyle} value={newT.email} onChange={e => setNewT(p => ({ ...p, email: e.target.value }))} /></FieldRow>
+                <FieldRow label="Tiempo prom. (días)"><input type="number" style={iStyle} value={newT.avgDays} onChange={e => setNewT(p => ({ ...p, avgDays: e.target.value }))} placeholder="4.5" /></FieldRow>
+                <div style={{ gridColumn: '1/-1' }}><FieldRow label="Dirección"><input style={iStyle} value={newT.address} onChange={e => setNewT(p => ({ ...p, address: e.target.value }))} /></FieldRow></div>
+                <div style={{ gridColumn: '1/-1' }}><FieldRow label="Notas"><textarea rows={2} style={{ ...iStyle, resize: 'none' }} value={newT.notes} onChange={e => setNewT(p => ({ ...p, notes: e.target.value }))} /></FieldRow></div>
+                <div style={{ gridColumn: '1/-1', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0' }}>
+                  <span style={{ fontFamily: 'var(--font-inter)', fontSize: 13, color: B.ink }}>Activo</span>
+                  <Toggle on={newT.active} onChange={v => setNewT(p => ({ ...p, active: v }))} />
+                </div>
+              </div>
+            </div>
+            <div style={{ padding: '14px 24px', borderTop: `1px solid ${B.hairline}`, display: 'flex', gap: 8 }}>
+              <button onClick={() => { setProviders(p => [...p, { id: Date.now(), branch: newT.branches[0] ?? 'Pocitos', ...newT, current: 0, avgDays: parseFloat(newT.avgDays) || 0 }]); setShowAdd(false) }} style={{ padding: '10px 24px', borderRadius: 8, background: B.lilac, color: '#fff', border: 'none', fontFamily: 'var(--font-inter)', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>GUARDAR TALLER</button>
+              <button onClick={() => setShowAdd(false)} style={{ padding: '10px 16px', borderRadius: 8, background: 'transparent', color: B.ink3, border: `1px solid ${B.hairline}`, fontFamily: 'var(--font-inter)', fontSize: 13, cursor: 'pointer' }}>Cancelar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {detail && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(14,23,38,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }} onClick={() => setDetail(null)}>
+          <div style={{ background: B.surface, borderRadius: B.radiusLg, maxWidth: 760, width: '100%', maxHeight: '90vh', overflowY: 'auto', boxShadow: B.shadowLg }} onClick={e => e.stopPropagation()}>
+            <div style={{ padding: '18px 24px', borderBottom: `1px solid ${B.hairline}`, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
+                  <h3 style={{ fontFamily: 'var(--font-inter)', fontSize: 17, fontWeight: 700, color: B.ink, margin: 0 }}>{detail.name}</h3>
+                  <span style={{ fontFamily: 'var(--font-dm-mono)', fontSize: 11, fontWeight: 700, color: TYPE_CLR[detail.type] ?? B.ink3, background: (TYPE_CLR[detail.type] ?? B.ink3) + '18', padding: '3px 10px', borderRadius: 6 }}>{detail.type}</span>
+                </div>
+                <div style={{ fontFamily: 'var(--font-dm-mono)', fontSize: 12, color: B.ink3 }}>{detail.branch} · {detail.specialty} · {detail.phone}</div>
+              </div>
+              <button onClick={() => setDetail(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: B.ink3, fontSize: 20 }}>✕</button>
+            </div>
+            <div style={{ padding: '18px 24px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 10, marginBottom: 22 }}>
+                {[
+                  { label: 'Tiempo promedio',    value: detail.avgDays + ' días', color: B.blue  },
+                  { label: 'Ticket más largo',   value: '12 días',                color: B.rose  },
+                  { label: 'Costo total proc.',  value: '$187,400',               color: B.green },
+                  { label: 'Tasa de reingreso',  value: '8%',                     color: B.amber },
+                ].map(m => (
+                  <div key={m.label} style={{ background: B.surface2, border: `1px solid ${B.hairline}`, borderTop: `2px solid ${m.color}`, borderRadius: 10, padding: '10px 12px' }}>
+                    <div style={{ fontFamily: 'var(--font-bebas-neue)', fontSize: 20, color: m.color, lineHeight: 1 }}>{m.value}</div>
+                    <div style={{ fontFamily: 'var(--font-dm-mono)', fontSize: 9, color: B.ink3, marginTop: 3 }}>{m.label}</div>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ fontFamily: 'var(--font-inter)', fontSize: 13, fontWeight: 600, color: B.ink, marginBottom: 10 }}>Vehículos actuales en este taller</div>
+              <div style={{ border: `1px solid ${B.hairline}`, borderRadius: 10, overflow: 'hidden', marginBottom: 22 }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                  <thead><tr style={{ background: B.surface2 }}>{['Unidad','Modelo','Ticket','Etapa','Días','Costo est.'].map(h => <th key={h} style={{ fontFamily: 'var(--font-dm-mono)', fontSize: 10, color: B.ink3, fontWeight: 600, textAlign: 'left', padding: '7px 12px', borderBottom: `1px solid ${B.hairline}` }}>{h}</th>)}</tr></thead>
+                  <tbody>
+                    {T_CURRENT_VEHICLES.map((v, i) => (
+                      <tr key={i} style={{ borderBottom: `1px solid ${B.hairline}` }}>
+                        <td style={{ padding: '8px 12px', fontFamily: 'var(--font-dm-mono)', fontSize: 11, color: B.ink2, fontWeight: 600 }}>{v.unit}</td>
+                        <td style={{ padding: '8px 12px', fontFamily: 'var(--font-inter)', fontSize: 12, color: B.ink }}>{v.model}</td>
+                        <td style={{ padding: '8px 12px', fontFamily: 'var(--font-dm-mono)', fontSize: 11, color: B.blue }}>{v.ticket}</td>
+                        <td style={{ padding: '8px 12px' }}><span style={{ fontFamily: 'var(--font-dm-mono)', fontSize: 10, color: B.amber, background: B.amberSoft, padding: '2px 6px', borderRadius: 4 }}>{v.stage}</span></td>
+                        <td style={{ padding: '8px 12px', fontFamily: 'var(--font-dm-mono)', fontSize: 11, color: B.ink2, textAlign: 'center' }}>{v.days}</td>
+                        <td style={{ padding: '8px 12px', fontFamily: 'var(--font-dm-mono)', fontSize: 11, color: B.ink2, fontWeight: 600 }}>{v.cost}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <div style={{ fontFamily: 'var(--font-inter)', fontSize: 13, fontWeight: 600, color: B.ink, marginBottom: 10 }}>Historial de reparaciones</div>
+              <div style={{ border: `1px solid ${B.hairline}`, borderRadius: 10, overflow: 'hidden', marginBottom: 18 }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                  <thead><tr style={{ background: B.surface2 }}>{['Fecha','Unidad','Problema','Días','Costo','Resultado'].map(h => <th key={h} style={{ fontFamily: 'var(--font-dm-mono)', fontSize: 10, color: B.ink3, fontWeight: 600, textAlign: 'left', padding: '7px 12px', borderBottom: `1px solid ${B.hairline}` }}>{h}</th>)}</tr></thead>
+                  <tbody>
+                    {T_HISTORY.map((h, i) => (
+                      <tr key={i} style={{ borderBottom: `1px solid ${B.hairline}`, background: i % 2 === 0 ? 'transparent' : B.surface2 }}>
+                        <td style={{ padding: '8px 12px', fontFamily: 'var(--font-dm-mono)', fontSize: 11, color: B.ink3 }}>{h.date}</td>
+                        <td style={{ padding: '8px 12px', fontFamily: 'var(--font-dm-mono)', fontSize: 11, color: B.ink2, fontWeight: 600 }}>{h.unit}</td>
+                        <td style={{ padding: '8px 12px', fontFamily: 'var(--font-inter)', fontSize: 12, color: B.ink }}>{h.issue}</td>
+                        <td style={{ padding: '8px 12px', fontFamily: 'var(--font-dm-mono)', fontSize: 11, color: B.ink2, textAlign: 'center' }}>{h.days}</td>
+                        <td style={{ padding: '8px 12px', fontFamily: 'var(--font-dm-mono)', fontSize: 11, color: B.ink2, fontWeight: 600 }}>{h.cost}</td>
+                        <td style={{ padding: '8px 12px' }}><span style={{ fontFamily: 'var(--font-dm-mono)', fontSize: 10, color: B.green, background: B.greenSoft, padding: '2px 6px', borderRadius: 4 }}>{h.result}</span></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <button style={{ padding: '10px 22px', borderRadius: 8, background: B.lilac, color: '#fff', border: 'none', fontFamily: 'var(--font-inter)', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>+ Asignar vehículo</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </SectionCard>
+  )
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function ConfiguracionPage() {
   const [toast, setToast] = useState<string | null>(null)
@@ -723,6 +1212,8 @@ export default function ConfiguracionPage() {
           <Section3 onSave={() => save('Integraciones')} />
           <Section4 onSave={() => save('Notificaciones')} />
           <Section5 onSave={() => save('Flota y operaciones')} />
+          <SectionVendors onSave={() => save('Proveedores')} />
+          <SectionTalleres onSave={() => save('Talleres')} />
           <Section6 onSave={() => save('Sistema')} />
         </div>
       </main>
