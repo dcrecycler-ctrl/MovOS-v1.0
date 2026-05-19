@@ -1,11 +1,20 @@
-import { KPI, CriticalAlert, ServiceAlert, Branch, Contract, Part } from '@/lib/data'
+import type {
+  FleetStats,
+  CriticalAlert,
+  ServiceAlert,
+  LocationStat,
+  PartsRequest,
+  ContractRow,
+} from '@/lib/supabase/queries/dashboard'
+
+export type { FleetStats, CriticalAlert, ServiceAlert, LocationStat, PartsRequest, ContractRow }
 
 export type ModalPayload =
-  | { kind: 'kpi'; kpi: KPI }
+  | { kind: 'kpi'; kpiId: string; stats: FleetStats }
   | { kind: 'alert'; alert: CriticalAlert }
   | { kind: 'service'; alert: ServiceAlert }
-  | { kind: 'branch'; branch: Branch }
-  | { kind: 'contract'; contract: Contract }
-  | { kind: 'part'; part: Part }
-  | { kind: 'all-alerts'; title?: string }
-  | { kind: 'all-parts' }
+  | { kind: 'branch'; branch: LocationStat }
+  | { kind: 'contract'; contract: ContractRow }
+  | { kind: 'part'; part: PartsRequest }
+  | { kind: 'all-alerts'; title?: string; alerts: CriticalAlert[] }
+  | { kind: 'all-parts'; parts: PartsRequest[] }

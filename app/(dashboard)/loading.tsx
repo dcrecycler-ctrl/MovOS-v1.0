@@ -1,167 +1,171 @@
-import { DS, FONTS } from '@/lib/tokens'
+import { B } from '@/lib/tokens'
 import { CSSProperties } from 'react'
 
-// Named export so page.tsx can reuse it inside its own Suspense boundary
 export function DashboardSkeleton() {
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--ds-bg)', fontFamily: FONTS.mono }}>
+    <div style={{ minHeight: '100vh', background: B.bg }}>
 
-      {/* Nav skeleton */}
+      {/* Fake TopBar */}
       <div style={{
-        position: 'sticky', top: 0, zIndex: 100,
-        height: 52, background: 'var(--ds-bg-1)',
-        borderBottom: '1px solid var(--ds-border)',
-        display: 'flex', alignItems: 'center', padding: '0 36px', gap: 24,
+        height: 64, background: B.surface, borderBottom: `1px solid ${B.hairline}`,
+        display: 'flex', alignItems: 'center', padding: '0 32px', gap: 24,
+        position: 'sticky', top: 0, zIndex: 10,
       }}>
-        <Bone w={80} h={18} />
-        <div style={{ display: 'flex', gap: 8 }}>
-          {[90,80,60,90,110,80,70].map((w, i) => <Bone key={i} w={w} h={10} />)}
+        <Bone w={28} h={28} style={{ borderRadius: 9 }} />
+        <Bone w={60} h={16} />
+        <div style={{ display: 'flex', gap: 6, flex: 1 }}>
+          {[72, 84, 60, 96, 100, 80, 70].map((w, i) => <Bone key={i} w={w} h={28} style={{ borderRadius: 9999 }} />)}
         </div>
+        <Bone w={200} h={34} style={{ borderRadius: 9999 }} />
+        <Bone w={38} h={38} style={{ borderRadius: 9999 }} />
+        <Bone w={38} h={38} style={{ borderRadius: 9999 }} />
+        <Bone w={120} h={38} style={{ borderRadius: 9999 }} />
       </div>
 
-      <div style={{ maxWidth: 1440, margin: '0 auto', padding: '28px 36px 64px' }}>
+      <div className="w-full max-w-[1400px] mx-auto px-4 md:px-6 lg:px-8 pt-7 pb-24 md:pb-16">
 
-        {/* Page header skeleton */}
-        <div style={{ marginBottom: 24, paddingBottom: 16, borderBottom: '1px solid var(--ds-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-          <div>
-            <Bone w={160} h={24} style={{ marginBottom: 8 }} />
-            <Bone w={240} h={10} />
+        {/* Page header */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 28 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <Bone w={140} h={26} />
+            <Bone w={100} h={14} />
+            <Bone w={220} h={14} />
           </div>
-          <div style={{ display: 'flex', gap: 6 }}>
-            {[100,60,60,60,60].map((w, i) => <Bone key={i} w={w} h={26} />)}
-          </div>
+          <Bone w={80} h={36} style={{ borderRadius: 9999 }} />
         </div>
 
-        {/* Row 1 — KPI Cards */}
-        <div style={{ display: 'flex', gap: 1, marginBottom: 20, background: 'var(--ds-border)' }}>
-          {[...Array(5)].map((_, i) => (
-            <div key={i} style={{
-              flex: 1, padding: '16px 18px 14px',
-              background: 'var(--ds-bg-1)',
-              borderTop: `2px solid var(--ds-border-2)`,
-            }}>
-              <Bone w={70} h={9} style={{ marginBottom: 12 }} />
-              <Bone w={100} h={38} style={{ marginBottom: 8 }} />
-              <Bone w={140} h={9} />
-            </div>
+        {/* KPI row — 5 cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 mb-3.5">
+          {/* Hero KPI */}
+          <Bone w="100%" h={160} style={{ borderRadius: 16 }} />
+          {[...Array(4)].map((_, i) => (
+            <Bone key={i} w="100%" h={100} style={{ borderRadius: 14 }} />
           ))}
         </div>
 
-        {/* Row 2 — Two columns */}
-        <div style={{ display: 'flex', gap: 14, marginBottom: 20 }}>
+        {/* Alerts row — 2 cols */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3.5 mb-3.5">
           {[...Array(2)].map((_, col) => (
-            <div key={col} style={{ flex: 1, border: '1px solid var(--ds-border)', background: 'var(--ds-bg-1)' }}>
-              <div style={{ padding: '14px 14px 12px', borderBottom: '1px solid var(--ds-border)' }}>
-                <Bone w={160} h={9} />
-              </div>
-              {[...Array(5)].map((_, i) => (
-                <div key={i} style={{
-                  height: 44, borderBottom: '1px solid var(--ds-border)',
-                  display: 'flex', alignItems: 'center', gap: 12, padding: '0 14px',
-                }}>
-                  <Bone w={70}  h={9} />
-                  <Bone w={80}  h={9} />
-                  <Bone w={200} h={9} />
-                  <Bone w={60}  h={9} style={{ marginLeft: 'auto' }} />
+            <div key={col} style={{ background: B.surface, borderRadius: 16, border: `1px solid ${B.hairline}`, padding: 26 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <Bone w={180} h={18} />
+                  <Bone w={240} h={13} />
                 </div>
-              ))}
-              <SkeletonFooter />
+                <Bone w={80} h={22} style={{ borderRadius: 9999 }} />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '12px 14px', background: B.surface2, borderRadius: 12 }}>
+                    <Bone w={42} h={42} style={{ borderRadius: 12, flexShrink: 0 }} />
+                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                      <Bone w="60%" h={13} />
+                      <Bone w="80%" h={12} />
+                    </div>
+                    <Bone w={56} h={22} style={{ borderRadius: 9999 }} />
+                  </div>
+                ))}
+              </div>
             </div>
           ))}
         </div>
 
-        {/* Row 3 — 2/3 + 1/3 */}
-        <div style={{ display: 'flex', gap: 14, marginBottom: 20 }}>
-          <div style={{ flex: 2, border: '1px solid var(--ds-border)', background: 'var(--ds-bg-1)' }}>
-            <div style={{ padding: '14px 14px 12px', borderBottom: '1px solid var(--ds-border)' }}>
-              <Bone w={140} h={9} />
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1, background: 'var(--ds-border)' }}>
-              {[...Array(4)].map((_, i) => (
-                <div key={i} style={{ padding: '16px 18px 14px', background: 'var(--ds-bg-1)', borderTop: '2px solid var(--ds-border-2)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
-                    <div><Bone w={120} h={14} style={{ marginBottom: 6 }} /><Bone w={80} h={9} /></div>
-                    <Bone w={40} h={28} />
-                  </div>
-                  <Bone w="100%" h={2} style={{ marginBottom: 10 }} />
-                  <div style={{ display: 'flex', gap: 16 }}>
-                    <Bone w={40} h={22} />
-                    <Bone w={40} h={22} />
-                    <Bone w={60} h={22} />
-                  </div>
-                </div>
-              ))}
-            </div>
+        {/* Locations heading */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 14, marginTop: 8 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <Bone w={100} h={18} />
+            <Bone w={200} h={13} />
           </div>
-          <div style={{ flex: 1, border: '1px solid var(--ds-border)', background: 'var(--ds-bg-1)' }}>
-            <div style={{ padding: '14px 14px 12px', borderBottom: '1px solid var(--ds-border)' }}>
-              <Bone w={120} h={9} />
+          <Bone w={70} h={30} style={{ borderRadius: 9999 }} />
+        </div>
+
+        {/* Locations — 4 cols */}
+        <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-3.5 mb-3.5">
+          {[...Array(4)].map((_, i) => (
+            <Bone key={i} w="100%" h={i === 0 ? 160 : 130} style={{ borderRadius: 16 }} />
+          ))}
+        </div>
+
+        {/* Parts card */}
+        <div style={{ background: B.surface, borderRadius: 16, border: `1px solid ${B.hairline}`, padding: 26, marginBottom: 24 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <Bone w={200} h={18} />
+              <Bone w={150} h={13} />
             </div>
-            {[...Array(3)].map((_, i) => (
-              <div key={i} style={{ height: 44, borderBottom: '1px solid var(--ds-border)', display: 'flex', alignItems: 'center', gap: 10, padding: '0 12px' }}>
-                <Bone w={60} h={9} /><Bone w={130} h={9} /><Bone w={70} h={9} />
+            <Bone w={90} h={30} style={{ borderRadius: 9999 }} />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '14px 16px', background: B.surface2, borderRadius: 14 }}>
+                <Bone w={38} h={38} style={{ borderRadius: 11, flexShrink: 0 }} />
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 5 }}>
+                  <Bone w="70%" h={13} />
+                  <Bone w="50%" h={11} />
+                </div>
+                <Bone w={44} h={20} style={{ borderRadius: 9999 }} />
               </div>
             ))}
-            <SkeletonFooter />
           </div>
         </div>
 
-        {/* Row 4 — Contracts */}
-        <div style={{ border: '1px solid var(--ds-border)', background: 'var(--ds-bg-1)' }}>
-          <div style={{ padding: '14px 14px 12px', borderBottom: '1px solid var(--ds-border)' }}>
-            <Bone w={180} h={9} />
+        {/* Contracts heading */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 14, marginTop: 8 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <Bone w={200} h={18} />
+            <Bone w={260} h={13} />
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1, background: 'var(--ds-border)' }}>
-            {[...Array(4)].map((_, i) => (
-              <div key={i} style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                padding: '16px 20px', background: 'var(--ds-bg-1)', borderTop: '2px solid var(--ds-border-2)',
-              }}>
-                <div>
-                  <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 6 }}>
-                    <Bone w={100} h={16} /><Bone w={60} h={16} />
-                  </div>
-                  <Bone w={130} h={9} style={{ marginBottom: 10 }} />
-                  <Bone w={90} h={9} />
+          <Bone w={70} h={30} style={{ borderRadius: 9999 }} />
+        </div>
+
+        {/* Contracts — 2 cols */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} style={{ background: B.surface, borderRadius: 16, border: `1px solid ${B.hairline}`, padding: 24 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <Bone w={60} h={11} />
+                  <Bone w={160} h={16} />
+                  <Bone w={100} h={12} />
                 </div>
-                <Bone w={50} h={36} />
+                <Bone w={70} h={22} style={{ borderRadius: 9999 }} />
               </div>
-            ))}
-          </div>
-          <SkeletonFooter />
+              <div style={{ display: 'flex', gap: 0, padding: '14px 0', borderTop: `1px solid ${B.hairline}`, borderBottom: `1px solid ${B.hairline}`, marginBottom: 14 }}>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <Bone w={80} h={11} />
+                  <Bone w={40} h={26} />
+                  <Bone w={60} h={11} />
+                </div>
+                <div style={{ flex: 1, paddingLeft: 20, borderLeft: `1px solid ${B.hairline}`, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <Bone w={80} h={11} />
+                  <Bone w={80} h={14} />
+                  <Bone w={60} h={11} />
+                </div>
+              </div>
+              <Bone w={160} h={12} />
+            </div>
+          ))}
         </div>
       </div>
     </div>
   )
 }
-
-// ─── Skeleton primitives ──────────────────────────────────────────────────────
 
 function Bone({ w, h, style }: { w: number | string; h: number; style?: CSSProperties }) {
   return (
-    <div style={{
-      width: w, height: h,
-      background: 'var(--ds-border)',
-      borderRadius: 0,
-      flexShrink: 0,
-      opacity: 0.8,
-      ...style,
-    }} />
+    <div
+      className="animate-pulse"
+      style={{
+        width: w, height: h,
+        background: B.surface2,
+        borderRadius: 6,
+        flexShrink: 0,
+        ...style,
+      }}
+    />
   )
 }
 
-function SkeletonFooter() {
-  return (
-    <div style={{
-      height: 36, borderTop: '1px solid var(--ds-border)',
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-    }}>
-      <Bone w={140} h={9} />
-    </div>
-  )
-}
-
-// Default export required by Next.js route segment convention
 export default function Loading() {
   return <DashboardSkeleton />
 }
