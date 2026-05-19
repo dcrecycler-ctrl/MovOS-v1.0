@@ -1,6 +1,6 @@
 'use client'
 
-import { DS, FONTS } from '@/lib/tokens'
+import { B } from '@/lib/tokens'
 import { SectionLabel } from '@/components/ui/SectionLabel'
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
@@ -8,9 +8,9 @@ import { SectionLabel } from '@/components/ui/SectionLabel'
 const TOTAL_MONTH = 142800
 
 const COST_BREAKDOWN = [
-  { label: 'Labor',          amount: 58400, color: DS.blue   },
-  { label: 'Parts',          amount: 49200, color: DS.orange },
-  { label: 'External Shops', amount: 35200, color: DS.purple },
+  { label: 'Labor',          amount: 58400, color: B.blue  },
+  { label: 'Parts',          amount: 49200, color: B.amber },
+  { label: 'External Shops', amount: 35200, color: B.lilac },
 ]
 
 const TOP_VEHICLES = [
@@ -36,12 +36,10 @@ const CAT_MAX      = Math.max(...CATEGORY_COSTS.map(c => c.avg))
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-function HBar({
-  pct, color, height = 4,
-}: { pct: number; color: string; height?: number }) {
+function HBar({ pct, color, height = 4 }: { pct: number; color: string; height?: number }) {
   return (
-    <div style={{ flex: 1, height, background: 'var(--ds-bg-3)' }}>
-      <div style={{ width: `${pct}%`, height: '100%', background: color }} />
+    <div style={{ flex: 1, height, background: B.surface3, borderRadius: height }}>
+      <div style={{ width: `${pct}%`, height: '100%', background: color, borderRadius: height }} />
     </div>
   )
 }
@@ -57,24 +55,27 @@ export function CostAnalysis() {
   return (
     <div>
       <div style={{ marginBottom: 12 }}>
-        <SectionLabel label="Maintenance Costs" color={DS.lime} />
+        <SectionLabel label="Maintenance Costs" color={B.green} />
       </div>
 
-      <div style={{ border: '1px solid var(--ds-border)', background: 'var(--ds-bg-1)' }}>
+      <div style={{
+        border: `1px solid ${B.hairline}`, background: B.surface,
+        borderRadius: 14, boxShadow: B.shadowSm, overflow: 'hidden',
+      }}>
 
         {/* Total spend */}
-        <div style={{ padding: '16px 16px 14px', borderBottom: '1px solid var(--ds-border)' }}>
-          <div style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>
+        <div style={{ padding: '16px 16px 14px', borderBottom: `1px solid ${B.hairline}` }}>
+          <div style={{ fontSize: 11, fontFamily: 'var(--font-inter)', color: B.ink3, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 4 }}>
             Total Spend — May 2026
           </div>
-          <div style={{ fontSize: 44, fontFamily: FONTS.display, color: DS.gold, lineHeight: 1, letterSpacing: '0.02em' }}>
+          <div style={{ fontSize: 36, fontFamily: 'var(--font-inter)', fontWeight: 700, color: B.amber, lineHeight: 1 }}>
             $UY {TOTAL_MONTH.toLocaleString()}
           </div>
         </div>
 
         {/* Cost breakdown bars */}
-        <div style={{ padding: '14px 16px', borderBottom: '1px solid var(--ds-border)' }}>
-          <div style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>
+        <div style={{ padding: '14px 16px', borderBottom: `1px solid ${B.hairline}` }}>
+          <div style={{ fontSize: 11, fontFamily: 'var(--font-inter)', color: B.ink3, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 12 }}>
             Breakdown
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -83,12 +84,12 @@ export function CostAnalysis() {
               return (
                 <div key={c.label}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-                    <span style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                    <span style={{ fontSize: 11, fontFamily: 'var(--font-inter)', color: B.ink3, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       {c.label}
                     </span>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span style={{ fontSize: 10, fontFamily: FONTS.mono, color: c.color }}>{pct}%</span>
-                      <span style={{ fontSize: 10, fontFamily: FONTS.mono, color: 'var(--ds-dim)', width: 110, textAlign: 'right' }}>
+                      <span style={{ fontSize: 12, fontFamily: 'var(--font-inter)', color: c.color }}>{pct}%</span>
+                      <span style={{ fontSize: 12, fontFamily: 'var(--font-inter)', color: B.ink2, width: 110, textAlign: 'right' }}>
                         {formatUY(c.amount)}
                       </span>
                     </div>
@@ -101,8 +102,8 @@ export function CostAnalysis() {
         </div>
 
         {/* Top 5 vehicles */}
-        <div style={{ padding: '14px 16px', borderBottom: '1px solid var(--ds-border)' }}>
-          <div style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>
+        <div style={{ padding: '14px 16px', borderBottom: `1px solid ${B.hairline}` }}>
+          <div style={{ fontSize: 11, fontFamily: 'var(--font-inter)', color: B.ink3, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 12 }}>
             Top 5 Vehicles This Month
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
@@ -112,14 +113,14 @@ export function CostAnalysis() {
                 <div key={v.unit}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 3 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span style={{ fontSize: 11, fontFamily: FONTS.mono, color: DS.gold, width: 56 }}>{v.unit}</span>
-                      <span style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)' }}>{v.model}</span>
+                      <span style={{ fontSize: 12, fontFamily: 'var(--font-inter)', fontWeight: 700, color: B.amber, width: 56 }}>{v.unit}</span>
+                      <span style={{ fontSize: 11, fontFamily: 'var(--font-inter)', color: B.ink3 }}>{v.model}</span>
                     </div>
-                    <span style={{ fontSize: 10, fontFamily: FONTS.mono, color: 'var(--ds-dim)' }}>
+                    <span style={{ fontSize: 12, fontFamily: 'var(--font-inter)', color: B.ink2 }}>
                       {formatUY(v.cost)}
                     </span>
                   </div>
-                  <HBar pct={pct} color={DS.gold} height={4} />
+                  <HBar pct={pct} color={B.amber} height={4} />
                 </div>
               )
             })}
@@ -128,7 +129,7 @@ export function CostAnalysis() {
 
         {/* Category averages */}
         <div style={{ padding: '14px 16px' }}>
-          <div style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>
+          <div style={{ fontSize: 11, fontFamily: 'var(--font-inter)', color: B.ink3, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 12 }}>
             Avg Cost per Category
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
@@ -136,11 +137,11 @@ export function CostAnalysis() {
               const pct = Math.round((c.avg / CAT_MAX) * 100)
               return (
                 <div key={c.label} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <span style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', width: 60, flexShrink: 0 }}>
+                  <span style={{ fontSize: 11, fontFamily: 'var(--font-inter)', color: B.ink3, textTransform: 'uppercase', width: 60, flexShrink: 0 }}>
                     {c.label}
                   </span>
-                  <HBar pct={pct} color={DS.blue} height={4} />
-                  <span style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-dim)', width: 90, textAlign: 'right', flexShrink: 0 }}>
+                  <HBar pct={pct} color={B.blue} height={4} />
+                  <span style={{ fontSize: 11, fontFamily: 'var(--font-inter)', color: B.ink2, width: 90, textAlign: 'right', flexShrink: 0 }}>
                     {formatUY(c.avg)}
                   </span>
                 </div>

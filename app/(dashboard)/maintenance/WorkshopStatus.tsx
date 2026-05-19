@@ -1,6 +1,6 @@
 'use client'
 
-import { DS, FONTS } from '@/lib/tokens'
+import { B } from '@/lib/tokens'
 import { SectionLabel } from '@/components/ui/SectionLabel'
 import { StatusBadge }  from '@/components/ui/StatusBadge'
 
@@ -38,16 +38,16 @@ const WORKSHOPS: Workshop[] = [
 ]
 
 const TYPE_COLOR: Record<WorkshopType, string> = {
-  internal:   DS.gold,
-  dealer:     DS.blue,
-  specialist: DS.purple,
+  internal:   B.amber,
+  dealer:     B.blue,
+  specialist: B.lilac,
 }
 
 const STACKED_SEGMENTS = [
-  { key: 'waiting',    label: 'Waiting',    color: DS.yellow },
-  { key: 'inProgress', label: 'In Progress', color: DS.blue  },
-  { key: 'inspected',  label: 'Inspected',  color: DS.green  },
-  { key: 'cleared',    label: 'Cleared',    color: DS.slate  },
+  { key: 'waiting',    label: 'Waiting',     color: B.amber },
+  { key: 'inProgress', label: 'In Progress', color: B.blue  },
+  { key: 'inspected',  label: 'Inspected',   color: B.green },
+  { key: 'cleared',    label: 'Cleared',     color: B.sky   },
 ] as const
 
 // ─── WorkshopStatus ───────────────────────────────────────────────────────────
@@ -56,11 +56,14 @@ export function WorkshopStatus() {
   const totalVehicles = WORKSHOPS.reduce((a, w) => a + w.waiting + w.inProgress + w.inspected + w.cleared, 0)
 
   return (
-    <div style={{ border: '1px solid var(--ds-border)', background: 'var(--ds-bg-1)' }}>
+    <div style={{
+      border: `1px solid ${B.hairline}`, background: B.surface,
+      borderRadius: 14, boxShadow: B.shadowSm, overflow: 'hidden',
+    }}>
 
       {/* Header */}
-      <div style={{ padding: '14px 14px 12px', borderBottom: '1px solid var(--ds-border)' }}>
-        <SectionLabel label="Workshop Load" count={totalVehicles} color={DS.gold} />
+      <div style={{ padding: '14px 14px 12px', borderBottom: `1px solid ${B.hairline}` }}>
+        <SectionLabel label="Workshop Load" count={totalVehicles} color={B.amber} />
       </div>
 
       {/* Workshop cards */}
@@ -76,22 +79,22 @@ export function WorkshopStatus() {
         return (
           <div key={w.id} style={{
             padding: '12px 14px',
-            borderBottom: i < WORKSHOPS.length - 1 ? '1px solid var(--ds-border)' : 'none',
+            borderBottom: i < WORKSHOPS.length - 1 ? `1px solid ${B.hairline}` : 'none',
           }}>
             {/* Workshop name + type badge */}
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 6 }}>
               <div>
-                <div style={{ fontSize: 11, fontFamily: FONTS.mono, color: 'var(--ds-text)', marginBottom: 2 }}>
+                <div style={{ fontSize: 13, fontFamily: 'var(--font-inter)', color: B.ink, fontWeight: 500, marginBottom: 2 }}>
                   {w.name}
                 </div>
-                <div style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)', letterSpacing: '0.04em' }}>
+                <div style={{ fontSize: 11, fontFamily: 'var(--font-inter)', color: B.ink3 }}>
                   {w.city}
                 </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 <StatusBadge label={w.type.toUpperCase()} color={TYPE_COLOR[w.type]} small />
                 {w.techs !== null && (
-                  <span style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)' }}>
+                  <span style={{ fontSize: 11, fontFamily: 'var(--font-inter)', color: B.ink3 }}>
                     {w.techs} techs
                   </span>
                 )}
@@ -100,13 +103,13 @@ export function WorkshopStatus() {
 
             {/* Large vehicle count */}
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 8 }}>
-              <span style={{ fontSize: 32, fontFamily: FONTS.display, color: DS.gold, lineHeight: 1 }}>
+              <span style={{ fontSize: 28, fontFamily: 'var(--font-inter)', fontWeight: 700, color: B.amber, lineHeight: 1 }}>
                 {total}
               </span>
-              <span style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+              <span style={{ fontSize: 11, fontFamily: 'var(--font-inter)', color: B.ink3, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
                 vehicles
               </span>
-              <span style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)', marginLeft: 'auto' }}>
+              <span style={{ fontSize: 11, fontFamily: 'var(--font-inter)', color: B.ink3, marginLeft: 'auto' }}>
                 avg {w.avgDays}d
               </span>
             </div>
@@ -119,6 +122,7 @@ export function WorkshopStatus() {
                     flex: seg.count,
                     background: seg.color,
                     height: '100%',
+                    borderRadius: 3,
                   }} />
                 ))}
               </div>
@@ -128,8 +132,8 @@ export function WorkshopStatus() {
             <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
               {segments.map(seg => (
                 <div key={seg.key} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                  <div style={{ width: 6, height: 6, background: seg.color, flexShrink: 0 }} />
-                  <span style={{ fontSize: 8, fontFamily: FONTS.mono, color: 'var(--ds-muted)', letterSpacing: '0.04em' }}>
+                  <div style={{ width: 6, height: 6, background: seg.color, flexShrink: 0, borderRadius: 2 }} />
+                  <span style={{ fontSize: 11, fontFamily: 'var(--font-inter)', color: B.ink3 }}>
                     {seg.count} {seg.label}
                   </span>
                 </div>

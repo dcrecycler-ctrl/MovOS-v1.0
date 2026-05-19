@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { DS, FONTS } from '@/lib/tokens'
+import type { CSSProperties } from 'react'
+import { B } from '@/lib/tokens'
 import { SectionLabel } from '@/components/ui/SectionLabel'
 import { StatusBadge }  from '@/components/ui/StatusBadge'
 import { ActionButton } from '@/components/ui/ActionButton'
@@ -154,17 +155,17 @@ const ALL_TICKETS: Ticket[] = [
 // ─── Colors + labels ──────────────────────────────────────────────────────────
 
 const SEV_COLOR: Record<Severity, string> = {
-  critical: DS.red,
-  major:    DS.orange,
-  minor:    DS.yellow,
+  critical: B.rose,
+  major:    B.amber,
+  minor:    B.sky,
 }
 
 const STATUS_COLOR: Record<TicketStatus, string> = {
-  open:          DS.red,
-  assigned:      DS.yellow,
-  in_progress:   DS.blue,
-  waiting_parts: DS.orange,
-  completed:     DS.green,
+  open:          B.rose,
+  assigned:      B.amber,
+  in_progress:   B.blue,
+  waiting_parts: B.amber,
+  completed:     B.green,
 }
 
 const STATUS_LABEL: Record<TicketStatus, string> = {
@@ -216,21 +217,21 @@ const COL_WIDTHS = {
   actions:    140,
 }
 
-const TH: React.CSSProperties = {
-  position: 'sticky', top: 0, background: 'var(--ds-bg)',
+const TH: CSSProperties = {
+  position: 'sticky', top: 0, background: B.surface2,
   padding: '0 10px', height: 32,
-  fontSize: 8, fontFamily: FONTS.mono,
-  textTransform: 'uppercase', letterSpacing: '0.1em',
-  color: 'var(--ds-muted)',
-  borderBottom: '1px solid var(--ds-border)',
+  fontSize: 11, fontFamily: 'var(--font-inter)',
+  textTransform: 'uppercase', letterSpacing: '0.07em',
+  color: B.ink3,
+  borderBottom: `1px solid ${B.hairline}`,
   whiteSpace: 'nowrap', userSelect: 'none',
   textAlign: 'left',
 }
 
-const TD: React.CSSProperties = {
+const TD: CSSProperties = {
   padding: '0 10px',
-  fontSize: 11, fontFamily: FONTS.mono,
-  color: 'var(--ds-text)',
+  fontSize: 12, fontFamily: 'var(--font-inter)',
+  color: B.ink,
   whiteSpace: 'nowrap',
 }
 
@@ -260,39 +261,36 @@ export function RepairTicketList() {
   return (
     <div>
       <div style={{ marginBottom: 12 }}>
-        <SectionLabel label="All Repair Tickets" count={tickets.filter(t => t.status !== 'completed').length} color={DS.purple} />
+        <SectionLabel label="All Repair Tickets" count={tickets.filter(t => t.status !== 'completed').length} color={B.lilac} />
       </div>
 
       {/* Filter bar */}
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 10 }}>
-        {/* Status filter */}
         <FilterGroup
           options={STATUS_OPTS}
           active={statusFilter}
-          color={DS.purple}
+          color={B.lilac}
           onChange={v => setStatusFilter(v as TicketStatus | 'all')}
         />
-        {/* Branch filter */}
         <FilterGroup
           options={BRANCH_OPTS}
           active={branchFilter}
-          color={DS.blue}
+          color={B.blue}
           onChange={setBranchFilter}
         />
-        {/* Severity filter */}
         <FilterGroup
           options={SEV_OPTS}
           active={sevFilter}
-          color={DS.orange}
+          color={B.amber}
           onChange={v => setSevFilter(v as Severity | 'all')}
         />
-        <span style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)', alignSelf: 'center', marginLeft: 4, letterSpacing: '0.06em' }}>
+        <span style={{ fontSize: 11, fontFamily: 'var(--font-inter)', color: B.ink3, alignSelf: 'center', marginLeft: 4 }}>
           {rows.length} ticket{rows.length !== 1 ? 's' : ''}
         </span>
       </div>
 
       {/* Table */}
-      <div style={{ border: '1px solid var(--ds-border)', overflowX: 'auto' }}>
+      <div style={{ border: `1px solid ${B.hairline}`, borderRadius: 10, overflow: 'hidden' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 1100 }}>
           <thead>
             <tr>
@@ -317,8 +315,8 @@ export function RepairTicketList() {
                   key={t.id}
                   style={{
                     height: 44,
-                    background: hoveredRow === i ? 'var(--ds-bg-2)' : 'transparent',
-                    borderBottom: '1px solid var(--ds-border)',
+                    background: hoveredRow === i ? B.surface2 : 'transparent',
+                    borderBottom: `1px solid ${B.hairline}`,
                     borderLeft: `2px solid ${SEV_COLOR[t.severity]}`,
                     cursor: 'pointer',
                     transition: 'background 0.1s',
@@ -327,8 +325,8 @@ export function RepairTicketList() {
                   onMouseLeave={() => setHoveredRow(null)}
                   onClick={() => setSelected(t)}
                 >
-                  <td style={{ ...TD, color: DS.purple }}>{t.id}</td>
-                  <td style={{ ...TD, color: DS.gold }}>{t.unit}</td>
+                  <td style={{ ...TD, color: B.lilac, fontWeight: 600 }}>{t.id}</td>
+                  <td style={{ ...TD, color: B.amber, fontWeight: 700 }}>{t.unit}</td>
                   <td style={{ ...TD }}>{t.plate}</td>
                   <td style={{ ...TD, maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis' }}>{t.issue}</td>
                   <td style={{ ...TD }}>
@@ -337,19 +335,19 @@ export function RepairTicketList() {
                   <td style={{ ...TD }}>
                     <StatusBadge label={STATUS_LABEL[t.status]} color={STATUS_COLOR[t.status]} small />
                   </td>
-                  <td style={{ ...TD, color: 'var(--ds-dim)', fontSize: 10 }}>{t.assignedTo}</td>
-                  <td style={{ ...TD, color: 'var(--ds-dim)', fontSize: 10 }}>{t.shop || '—'}</td>
-                  <td style={{ ...TD, textAlign: 'right', color: totalCost > 0 ? DS.gold : 'var(--ds-muted)' }}>
+                  <td style={{ ...TD, color: B.ink2, fontSize: 11 }}>{t.assignedTo}</td>
+                  <td style={{ ...TD, color: B.ink2, fontSize: 11 }}>{t.shop || '—'}</td>
+                  <td style={{ ...TD, textAlign: 'right', color: totalCost > 0 ? B.amber : B.ink3 }}>
                     {totalCost > 0 ? `$UY ${totalCost.toLocaleString()}` : '—'}
                   </td>
-                  <td style={{ ...TD, textAlign: 'right', color: t.daysOpen >= 7 ? DS.red : 'var(--ds-dim)' }}>
+                  <td style={{ ...TD, textAlign: 'right', color: t.daysOpen >= 7 ? B.rose : B.ink2 }}>
                     {t.daysOpen}
                   </td>
                   <td style={{ ...TD }} onClick={e => e.stopPropagation()}>
                     <div style={{ display: 'flex', gap: 4 }}>
-                      <SmallBtn label="VIEW"   color={DS.gold}   onClick={(e) => { e.stopPropagation(); setSelected(t) }} />
+                      <SmallBtn label="VIEW"  color={B.amber} onClick={(e) => { e.stopPropagation(); setSelected(t) }} />
                       {t.status !== 'completed' && (
-                        <SmallBtn label="CLOSE"  color={DS.green}  onClick={(e) => closeTicket(t.id, e)} />
+                        <SmallBtn label="CLOSE" color={B.green} onClick={(e) => closeTicket(t.id, e)} />
                       )}
                     </div>
                   </td>
@@ -358,7 +356,7 @@ export function RepairTicketList() {
             })}
             {rows.length === 0 && (
               <tr>
-                <td colSpan={11} style={{ padding: '28px 16px', fontSize: 10, fontFamily: FONTS.mono, color: 'var(--ds-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', textAlign: 'center' }}>
+                <td colSpan={11} style={{ padding: '28px 16px', fontSize: 12, fontFamily: 'var(--font-inter)', color: B.ink3, textTransform: 'uppercase', letterSpacing: '0.06em', textAlign: 'center' }}>
                   No tickets match these filters
                 </td>
               </tr>
@@ -387,10 +385,10 @@ export function RepairTicketList() {
 function SmallBtn({ label, color, onClick }: { label: string; color: string; onClick: (e: React.MouseEvent) => void }) {
   return (
     <button onClick={onClick} style={{
-      height: 22, padding: '0 8px',
-      fontSize: 8, fontFamily: FONTS.mono, textTransform: 'uppercase', letterSpacing: '0.08em',
+      height: 24, padding: '0 9px',
+      fontSize: 11, fontFamily: 'var(--font-inter)', textTransform: 'uppercase', letterSpacing: '0.06em',
       color, background: `${color}14`, border: `1px solid ${color}54`,
-      borderRadius: 0, cursor: 'pointer',
+      borderRadius: 6, cursor: 'pointer',
     }}>
       {label}
     </button>
@@ -405,16 +403,16 @@ function FilterGroup<T extends string>({
   onChange: (v: T) => void
 }) {
   return (
-    <div style={{ display: 'flex', gap: 1, background: 'var(--ds-border)' }}>
+    <div style={{ display: 'flex', gap: 1, background: B.surface3, borderRadius: 8, overflow: 'hidden' }}>
       {options.map(o => {
         const isActive = active === o.value
         return (
           <button key={o.value} onClick={() => onChange(o.value)} style={{
             height: 28, padding: '0 10px',
-            fontSize: 9, fontFamily: FONTS.mono, textTransform: 'uppercase', letterSpacing: '0.07em',
-            color:      isActive ? color : 'var(--ds-dim)',
-            background: isActive ? `${color}14` : 'var(--ds-bg-1)',
-            border:     `1px solid ${isActive ? color : 'var(--ds-border)'}`,
+            fontSize: 11, fontFamily: 'var(--font-inter)', textTransform: 'uppercase', letterSpacing: '0.05em',
+            color:      isActive ? color : B.ink2,
+            background: isActive ? `${color}14` : B.surface,
+            border:     `1px solid ${isActive ? color : B.hairline}`,
             cursor: 'pointer',
           }}>
             {o.label}

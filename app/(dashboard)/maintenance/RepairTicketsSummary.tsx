@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { DS, FONTS } from '@/lib/tokens'
+import { B } from '@/lib/tokens'
 import { SectionLabel } from '@/components/ui/SectionLabel'
 import { StatusBadge }  from '@/components/ui/StatusBadge'
 import { DrillModal }   from '@/components/ui/DrillModal'
@@ -26,11 +26,11 @@ interface UrgentTicket {
 // ─── Pipeline stages ──────────────────────────────────────────────────────────
 
 const PIPELINE = [
-  { id: 'open',          label: 'Open',          count: 3, color: DS.red    },
-  { id: 'assigned',      label: 'Assigned',      count: 2, color: DS.yellow },
-  { id: 'in_progress',   label: 'In Progress',   count: 2, color: DS.blue   },
-  { id: 'waiting_parts', label: 'Waiting Parts', count: 1, color: DS.orange },
-  { id: 'completed',     label: 'Completed',     count: 5, color: DS.green  },
+  { id: 'open',          label: 'Open',          count: 3, color: B.rose  },
+  { id: 'assigned',      label: 'Assigned',      count: 2, color: B.amber },
+  { id: 'in_progress',   label: 'In Progress',   count: 2, color: B.blue  },
+  { id: 'waiting_parts', label: 'Waiting Parts', count: 1, color: B.amber },
+  { id: 'completed',     label: 'Completed',     count: 5, color: B.green },
 ]
 const PIPELINE_MAX = 5
 
@@ -113,9 +113,9 @@ const URGENT: UrgentTicket[] = [
 // ─── Colors ───────────────────────────────────────────────────────────────────
 
 const SEV_COLOR: Record<Severity, string> = {
-  critical: DS.red,
-  major:    DS.orange,
-  minor:    DS.yellow,
+  critical: B.rose,
+  major:    B.amber,
+  minor:    B.amber,
 }
 
 // ─── RepairTicketsSummary ─────────────────────────────────────────────────────
@@ -125,32 +125,33 @@ export function RepairTicketsSummary() {
   const totalActive = PIPELINE.filter(s => s.id !== 'completed').reduce((a, s) => a + s.count, 0)
 
   return (
-    <div style={{ border: '1px solid var(--ds-border)', background: 'var(--ds-bg-1)' }}>
+    <div style={{ border: `1px solid ${B.hairline}`, background: B.surface, borderRadius: 14, boxShadow: B.shadowSm, overflow: 'hidden' }}>
 
       {/* Header */}
-      <div style={{ padding: '14px 14px 12px', borderBottom: '1px solid var(--ds-border)' }}>
-        <SectionLabel label="Repair Tickets" count={totalActive} color={DS.purple} />
+      <div style={{ padding: '14px 16px 12px', borderBottom: `1px solid ${B.hairline}` }}>
+        <SectionLabel label="Repair Tickets" count={totalActive} color={B.lilac} />
       </div>
 
       {/* Pipeline */}
-      <div style={{ padding: '14px 14px 12px', borderBottom: '1px solid var(--ds-border)' }}>
-        <div style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>
+      <div style={{ padding: '14px 16px 12px', borderBottom: `1px solid ${B.hairline}` }}>
+        <div style={{ fontSize: 11, fontFamily: 'var(--font-inter)', fontWeight: 500, color: B.ink3, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 10 }}>
           Pipeline
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {PIPELINE.map(stage => (
             <div key={stage.id} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <div style={{ width: 24, fontSize: 16, fontFamily: FONTS.display, color: stage.color, lineHeight: 1, textAlign: 'right', flexShrink: 0 }}>
+              <div style={{ width: 24, fontSize: 18, fontFamily: 'var(--font-inter)', fontWeight: 700, color: stage.color, lineHeight: 1, textAlign: 'right', flexShrink: 0, letterSpacing: '-0.02em' }}>
                 {stage.count}
               </div>
-              <div style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', width: 90, flexShrink: 0 }}>
+              <div style={{ fontSize: 11, fontFamily: 'var(--font-inter)', color: B.ink3, width: 90, flexShrink: 0 }}>
                 {stage.label}
               </div>
-              <div style={{ flex: 1, height: 4, background: 'var(--ds-bg-3)' }}>
+              <div style={{ flex: 1, height: 4, background: B.surface3, borderRadius: 9999, overflow: 'hidden' }}>
                 <div style={{
                   height: '100%',
                   width: `${Math.round((stage.count / PIPELINE_MAX) * 100)}%`,
                   background: stage.color,
+                  borderRadius: 9999,
                 }} />
               </div>
             </div>
@@ -159,8 +160,8 @@ export function RepairTicketsSummary() {
       </div>
 
       {/* 5 urgent tickets */}
-      <div style={{ padding: '10px 14px 8px', borderBottom: '1px solid var(--ds-border)' }}>
-        <div style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+      <div style={{ padding: '10px 16px 8px', borderBottom: `1px solid ${B.hairline}` }}>
+        <div style={{ fontSize: 11, fontFamily: 'var(--font-inter)', fontWeight: 500, color: B.ink3, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
           Most Urgent
         </div>
       </div>
@@ -170,31 +171,31 @@ export function RepairTicketsSummary() {
           onClick={() => setSelected(t)}
           style={{
             display: 'flex', alignItems: 'flex-start', gap: 10,
-            padding: '9px 14px',
-            borderBottom: i < URGENT.length - 1 ? '1px solid var(--ds-border)' : 'none',
+            padding: '10px 16px',
+            borderBottom: i < URGENT.length - 1 ? `1px solid ${B.hairline}` : 'none',
             borderLeft: `2px solid ${SEV_COLOR[t.severity]}`,
-            cursor: 'pointer',
+            cursor: 'pointer', transition: 'background 0.1s',
           }}
-          onMouseEnter={e => (e.currentTarget.style.background = 'var(--ds-bg-2)')}
+          onMouseEnter={e => (e.currentTarget.style.background = B.surface2)}
           onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
         >
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
-              <span style={{ fontSize: 10, fontFamily: FONTS.mono, color: DS.gold }}>{t.unit}</span>
+              <span style={{ fontSize: 12, fontFamily: 'var(--font-dm-mono)', fontWeight: 700, color: B.amber }}>{t.unit}</span>
               <StatusBadge label={t.severity.toUpperCase()} color={SEV_COLOR[t.severity]} small />
             </div>
-            <div style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-dim)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginBottom: 2 }}>
+            <div style={{ fontSize: 12, fontFamily: 'var(--font-inter)', color: B.ink2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginBottom: 2 }}>
               {t.issue}
             </div>
-            <div style={{ fontSize: 8, fontFamily: FONTS.mono, color: 'var(--ds-muted)', letterSpacing: '0.04em' }}>
+            <div style={{ fontSize: 11, fontFamily: 'var(--font-inter)', color: B.ink3 }}>
               {t.assignedTo}
             </div>
           </div>
-          <div style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)', flexShrink: 0, textAlign: 'right' }}>
-            <div style={{ fontSize: 14, fontFamily: FONTS.display, color: t.daysOpen >= 7 ? DS.red : 'var(--ds-dim)', lineHeight: 1 }}>
+          <div style={{ flexShrink: 0, textAlign: 'right' }}>
+            <div style={{ fontSize: 18, fontFamily: 'var(--font-inter)', fontWeight: 700, color: t.daysOpen >= 7 ? B.rose : B.ink2, lineHeight: 1, letterSpacing: '-0.02em' }}>
               {t.daysOpen}
             </div>
-            <div style={{ fontSize: 8, letterSpacing: '0.04em' }}>days</div>
+            <div style={{ fontSize: 11, fontFamily: 'var(--font-inter)', color: B.ink3 }}>days</div>
           </div>
         </div>
       ))}
@@ -234,36 +235,38 @@ export function TicketDetail({ ticket: t, onClose }: { ticket: UrgentTicket; onC
   return (
     <div>
       {/* Info grid */}
-      <div style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>
+      <div style={{ fontSize: 11, fontFamily: 'var(--font-inter)', fontWeight: 500, color: B.ink3, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8 }}>
         Ticket Info
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr', gap: 1, background: 'var(--ds-border)', marginBottom: 16 }}>
-        {INFO_ROWS.flatMap(row => [
-          <div key={`${row.label}-l`} style={{ padding: '7px 10px', background: 'var(--ds-bg-1)', fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>
-            {row.label}
-          </div>,
-          <div key={`${row.label}-v`} style={{ padding: '7px 10px', background: 'var(--ds-bg-1)', fontSize: 11, fontFamily: FONTS.mono, color: 'var(--ds-text)' }}>
-            {row.value}
-          </div>,
-        ])}
+      <div style={{ borderRadius: 10, overflow: 'hidden', border: `1px solid ${B.hairline}`, marginBottom: 16 }}>
+        {INFO_ROWS.map((row, idx) => (
+          <div key={row.label} style={{ display: 'grid', gridTemplateColumns: '110px 1fr', borderBottom: idx < INFO_ROWS.length - 1 ? `1px solid ${B.hairline}` : 'none' }}>
+            <div style={{ padding: '8px 12px', background: idx % 2 === 0 ? B.surface2 : B.surface, fontSize: 11, fontFamily: 'var(--font-inter)', fontWeight: 500, color: B.ink3 }}>
+              {row.label}
+            </div>
+            <div style={{ padding: '8px 12px', background: idx % 2 === 0 ? B.surface2 : B.surface, fontSize: 13, fontFamily: 'var(--font-inter)', color: B.ink, borderLeft: `1px solid ${B.hairline}` }}>
+              {row.value}
+            </div>
+          </div>
+        ))}
       </div>
 
       {/* Description */}
-      <div style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>Description</div>
-      <div style={{ fontSize: 11, fontFamily: FONTS.mono, color: 'var(--ds-dim)', lineHeight: 1.6, padding: '8px 10px', border: '1px solid var(--ds-border)', background: 'var(--ds-bg-1)', marginBottom: 16 }}>
+      <div style={{ fontSize: 11, fontFamily: 'var(--font-inter)', fontWeight: 500, color: B.ink3, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6 }}>Description</div>
+      <div style={{ fontSize: 13, fontFamily: 'var(--font-inter)', color: B.ink2, lineHeight: 1.6, padding: '10px 14px', border: `1px solid ${B.hairline}`, borderRadius: 10, background: B.surface2, marginBottom: 16 }}>
         {t.description}
       </div>
 
       {/* Parts */}
       {t.parts.length > 0 && (
         <div style={{ marginBottom: 16 }}>
-          <div style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>Parts Used</div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 1, background: 'var(--ds-border)' }}>
-            {t.parts.map(p => (
-              <div key={p.name} style={{ display: 'grid', gridTemplateColumns: '1fr 32px 80px', gap: 1, background: 'transparent' }}>
-                <div style={{ padding: '7px 10px', background: 'var(--ds-bg-1)', fontSize: 10, fontFamily: FONTS.mono, color: 'var(--ds-dim)' }}>{p.name}</div>
-                <div style={{ padding: '7px 6px', background: 'var(--ds-bg-1)', fontSize: 10, fontFamily: FONTS.mono, color: 'var(--ds-muted)', textAlign: 'center' }}>×{p.qty}</div>
-                <div style={{ padding: '7px 10px', background: 'var(--ds-bg-1)', fontSize: 10, fontFamily: FONTS.mono, color: DS.gold, textAlign: 'right' }}>
+          <div style={{ fontSize: 11, fontFamily: 'var(--font-inter)', fontWeight: 500, color: B.ink3, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8 }}>Parts Used</div>
+          <div style={{ borderRadius: 10, overflow: 'hidden', border: `1px solid ${B.hairline}` }}>
+            {t.parts.map((p, idx) => (
+              <div key={p.name} style={{ display: 'grid', gridTemplateColumns: '1fr 36px 90px', borderBottom: idx < t.parts.length - 1 ? `1px solid ${B.hairline}` : 'none', background: idx % 2 === 0 ? B.surface2 : B.surface }}>
+                <div style={{ padding: '8px 12px', fontSize: 12, fontFamily: 'var(--font-inter)', color: B.ink2 }}>{p.name}</div>
+                <div style={{ padding: '8px 6px', fontSize: 12, fontFamily: 'var(--font-inter)', color: B.ink3, textAlign: 'center' }}>×{p.qty}</div>
+                <div style={{ padding: '8px 12px', fontSize: 12, fontFamily: 'var(--font-inter)', fontWeight: 600, color: B.amber, textAlign: 'right' }}>
                   ${(p.qty * p.unitCost).toLocaleString()}
                 </div>
               </div>
@@ -273,15 +276,15 @@ export function TicketDetail({ ticket: t, onClose }: { ticket: UrgentTicket; onC
       )}
 
       {/* Cost breakdown */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 1, background: 'var(--ds-border)', marginBottom: 16 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginBottom: 16 }}>
         {[
-          { label: 'Labor',  value: t.laborCost,  color: DS.blue   },
-          { label: 'Parts',  value: t.partsCost + t.parts.reduce((a, p) => a + p.qty * p.unitCost, 0), color: DS.orange },
-          { label: 'Total',  value: totalCost,     color: DS.gold   },
+          { label: 'Labor',  value: t.laborCost,  color: B.blue  },
+          { label: 'Parts',  value: t.partsCost + t.parts.reduce((a, p) => a + p.qty * p.unitCost, 0), color: B.amber },
+          { label: 'Total',  value: totalCost,    color: B.amber },
         ].map(c => (
-          <div key={c.label} style={{ background: 'var(--ds-bg-1)', padding: '10px 12px' }}>
-            <div style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 3 }}>{c.label}</div>
-            <div style={{ fontSize: c.label === 'Total' ? 18 : 14, fontFamily: FONTS.display, color: c.color }}>
+          <div key={c.label} style={{ background: B.surface2, padding: '12px 14px', borderRadius: 10 }}>
+            <div style={{ fontSize: 11, fontFamily: 'var(--font-inter)', fontWeight: 500, color: B.ink3, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 4 }}>{c.label}</div>
+            <div style={{ fontSize: c.label === 'Total' ? 20 : 16, fontFamily: 'var(--font-inter)', fontWeight: 700, color: c.color, letterSpacing: '-0.02em' }}>
               {c.value === 0 ? '—' : `$UY ${c.value.toLocaleString()}`}
             </div>
           </div>
@@ -289,29 +292,29 @@ export function TicketDetail({ ticket: t, onClose }: { ticket: UrgentTicket; onC
       </div>
 
       {/* Status history */}
-      <div style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>Status History</div>
+      <div style={{ fontSize: 11, fontFamily: 'var(--font-inter)', fontWeight: 500, color: B.ink3, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 10 }}>Status History</div>
       <div style={{ position: 'relative', paddingLeft: 20, marginBottom: 20 }}>
-        <div style={{ position: 'absolute', left: 6, top: 6, bottom: 6, width: 1, background: 'var(--ds-border)' }} />
+        <div style={{ position: 'absolute', left: 6, top: 6, bottom: 6, width: 1, background: B.hairline }} />
         {t.history.map((h, i) => {
-          const stageColor = h.status === 'open' ? DS.red : h.status === 'in_progress' ? DS.blue : h.status === 'waiting_parts' ? DS.orange : h.status === 'assigned' ? DS.yellow : DS.green
+          const stageColor = h.status === 'open' ? B.rose : h.status === 'in_progress' ? B.blue : h.status === 'waiting_parts' ? B.amber : h.status === 'assigned' ? B.amber : B.green
           return (
             <div key={i} style={{ position: 'relative', marginBottom: i < t.history.length - 1 ? 12 : 0 }}>
-              <div style={{ position: 'absolute', left: -20 + 6 - 4, top: 4, width: 8, height: 8, background: stageColor, zIndex: 1 }} />
-              <div style={{ fontSize: 9, fontFamily: FONTS.mono, color: stageColor, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 2 }}>
+              <div style={{ position: 'absolute', left: -20 + 6 - 4, top: 5, width: 7, height: 7, background: stageColor, borderRadius: 9999, zIndex: 1 }} />
+              <div style={{ fontSize: 11, fontFamily: 'var(--font-inter)', fontWeight: 600, color: stageColor, marginBottom: 2 }}>
                 {h.status.replace(/_/g, ' ')} · {h.date}
               </div>
-              <div style={{ fontSize: 10, fontFamily: FONTS.mono, color: 'var(--ds-dim)', lineHeight: 1.5, marginBottom: 1 }}>
+              <div style={{ fontSize: 12, fontFamily: 'var(--font-inter)', color: B.ink2, lineHeight: 1.5, marginBottom: 1 }}>
                 {h.note}
               </div>
-              <div style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)' }}>{h.actor}</div>
+              <div style={{ fontSize: 11, fontFamily: 'var(--font-inter)', color: B.ink3 }}>{h.actor}</div>
             </div>
           )
         })}
       </div>
 
       <div style={{ display: 'flex', gap: 8 }}>
-        <ActionButton label="Update Status" color={DS.blue}  onClick={() => {}} />
-        <ActionButton label="Close Ticket"  color={DS.green} secondary onClick={onClose} />
+        <ActionButton label="Update Status" color={B.blue}  onClick={() => {}} />
+        <ActionButton label="Close Ticket"  color={B.green} secondary onClick={onClose} />
       </div>
     </div>
   )

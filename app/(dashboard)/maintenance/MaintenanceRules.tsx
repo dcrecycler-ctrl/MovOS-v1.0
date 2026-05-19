@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { DS, FONTS } from '@/lib/tokens'
+import { B } from '@/lib/tokens'
 import { DataTable, Column } from '@/components/ui/DataTable'
 import { SectionLabel }      from '@/components/ui/SectionLabel'
 import { StatusBadge }       from '@/components/ui/StatusBadge'
@@ -32,9 +32,9 @@ const MFR_COLS: Column<MfrService>[] = [
   { key: 'nextDue',     header: 'Next Due',  width: 150 },
   { key: 'status', header: 'Status', width: 88,
     render: (v) => {
-      if (v === 'critical') return <StatusBadge label="CRITICAL" color={DS.red}    small />
-      if (v === 'warning')  return <StatusBadge label="WARNING"  color={DS.yellow} small />
-      return <StatusBadge label="OK" color={DS.green} small />
+      if (v === 'critical') return <StatusBadge label="CRITICAL" color={B.rose}  small />
+      if (v === 'warning')  return <StatusBadge label="WARNING"  color={B.amber} small />
+      return <StatusBadge label="OK" color={B.green} small />
     }},
 ]
 
@@ -58,10 +58,10 @@ const RULES: Rule[] = [
 ]
 
 const SCOPE_COLOR: Record<RuleScope, string> = {
-  fleet:    DS.gold,
-  category: DS.blue,
-  location: DS.green,
-  vehicle:  DS.purple,
+  fleet:    B.amber,
+  category: B.blue,
+  location: B.green,
+  vehicle:  B.lilac,
 }
 
 const SCOPE_ORDER: RuleScope[] = ['fleet', 'category', 'location', 'vehicle']
@@ -69,24 +69,24 @@ const SCOPE_ORDER: RuleScope[] = ['fleet', 'category', 'location', 'vehicle']
 // ─── MaintenanceRules ─────────────────────────────────────────────────────────
 
 export function MaintenanceRules() {
-  const [layer, setLayer]     = useState<'manufacturer' | 'internal'>('manufacturer')
+  const [layer, setLayer]       = useState<'manufacturer' | 'internal'>('manufacturer')
   const [showForm, setShowForm] = useState(false)
 
   return (
     <div>
       <div style={{ marginBottom: 12 }}>
-        <SectionLabel label="Maintenance Rules" color={DS.gold} />
+        <SectionLabel label="Maintenance Rules" color={B.amber} />
       </div>
 
       {/* Layer toggle */}
-      <div style={{ display: 'flex', gap: 1, marginBottom: 16, background: 'var(--ds-border)', width: 'fit-content' }}>
+      <div style={{ display: 'flex', gap: 1, marginBottom: 16, background: B.surface3, width: 'fit-content', borderRadius: 8, overflow: 'hidden' }}>
         {(['manufacturer', 'internal'] as const).map(l => (
           <button key={l} onClick={() => setLayer(l)} style={{
             height: 36, padding: '0 20px',
-            fontSize: 10, fontFamily: FONTS.mono, textTransform: 'uppercase', letterSpacing: '0.08em',
-            color:      layer === l ? DS.gold : 'var(--ds-dim)',
-            background: layer === l ? `${DS.gold}14` : 'var(--ds-bg-1)',
-            border:     `1px solid ${layer === l ? DS.gold : 'var(--ds-border)'}`,
+            fontSize: 12, fontFamily: 'var(--font-inter)', textTransform: 'uppercase', letterSpacing: '0.06em',
+            color:      layer === l ? B.amber : B.ink2,
+            background: layer === l ? `${B.amber}14` : B.surface,
+            border:     `1px solid ${layer === l ? B.amber : B.hairline}`,
             cursor: 'pointer',
           }}>
             {l === 'manufacturer' ? 'Manufacturer Booklet' : 'Internal Rules'}
@@ -96,10 +96,10 @@ export function MaintenanceRules() {
 
       {layer === 'manufacturer' && (
         <div>
-          <div style={{ border: '1px solid var(--ds-border)' }}>
+          <div style={{ border: `1px solid ${B.hairline}`, borderRadius: 10, overflow: 'hidden' }}>
             <DataTable columns={MFR_COLS} rows={MFR_SERVICES} />
           </div>
-          <div style={{ marginTop: 8, fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)', letterSpacing: '0.06em' }}>
+          <div style={{ marginTop: 8, fontSize: 11, fontFamily: 'var(--font-inter)', color: B.ink3 }}>
             WARNING = within warning threshold · CRITICAL = overdue or past due date
           </div>
         </div>
@@ -108,41 +108,41 @@ export function MaintenanceRules() {
       {layer === 'internal' && (
         <div>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-            <div style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)', letterSpacing: '0.06em' }}>
+            <div style={{ fontSize: 11, fontFamily: 'var(--font-inter)', color: B.ink3, letterSpacing: '0.04em' }}>
               VEHICLE &gt; LOCATION &gt; CATEGORY &gt; FLEET-WIDE
             </div>
-            <ActionButton label="+ Add Rule" color={DS.gold} onClick={() => setShowForm(f => !f)} />
+            <ActionButton label="+ Add Rule" color={B.amber} onClick={() => setShowForm(f => !f)} />
           </div>
 
           {/* Add form (inline) */}
           {showForm && (
-            <div style={{ border: `1px solid ${DS.gold}54`, borderTop: `2px solid ${DS.gold}`, background: `${DS.gold}08`, padding: '14px 16px', marginBottom: 14 }}>
-              <div style={{ fontSize: 10, fontFamily: FONTS.mono, color: DS.gold, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>
+            <div style={{ border: `1px solid ${B.amber}54`, borderTop: `2px solid ${B.amber}`, background: `${B.amber}08`, borderRadius: 10, padding: '14px 16px', marginBottom: 14 }}>
+              <div style={{ fontSize: 12, fontFamily: 'var(--font-inter)', fontWeight: 600, color: B.amber, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 12 }}>
                 New Internal Rule
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 8, marginBottom: 8 }}>
                 {[
-                  { label: 'Rule Name',  ph: 'e.g. Monthly wash' },
-                  { label: 'Scope',      ph: 'fleet / category / …' },
-                  { label: 'Trigger',    ph: 'e.g. Every 30 days' },
-                  { label: 'Alert Threshold', ph: 'e.g. 5 days' },
+                  { label: 'Rule Name',        ph: 'e.g. Monthly wash' },
+                  { label: 'Scope',            ph: 'fleet / category / …' },
+                  { label: 'Trigger',          ph: 'e.g. Every 30 days' },
+                  { label: 'Alert Threshold',  ph: 'e.g. 5 days' },
                 ].map(f => (
                   <div key={f.label}>
-                    <div style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 4 }}>
+                    <div style={{ fontSize: 11, fontFamily: 'var(--font-inter)', color: B.ink3, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 4 }}>
                       {f.label}
                     </div>
                     <input placeholder={f.ph} style={{
-                      width: '100%', height: 30, padding: '0 8px',
-                      fontSize: 10, fontFamily: FONTS.mono, color: 'var(--ds-text)',
-                      background: 'var(--ds-bg-1)', border: '1px solid var(--ds-border)',
-                      borderRadius: 0, outline: 'none',
+                      width: '100%', height: 32, padding: '0 10px',
+                      fontSize: 13, fontFamily: 'var(--font-inter)', color: B.ink,
+                      background: B.surface, border: `1px solid ${B.hairline}`,
+                      borderRadius: 6, outline: 'none',
                     }} />
                   </div>
                 ))}
               </div>
               <div style={{ display: 'flex', gap: 8 }}>
-                <ActionButton label="Save Rule" color={DS.gold} onClick={() => setShowForm(false)} />
-                <ActionButton label="Cancel"    color={DS.gold} secondary onClick={() => setShowForm(false)} />
+                <ActionButton label="Save Rule" color={B.amber} onClick={() => setShowForm(false)} />
+                <ActionButton label="Cancel"    color={B.amber} secondary onClick={() => setShowForm(false)} />
               </div>
             </div>
           )}
@@ -160,29 +160,29 @@ export function MaintenanceRules() {
                     count={rules.length} color={color}
                   />
                 </div>
-                <div style={{ border: '1px solid var(--ds-border)' }}>
+                <div style={{ border: `1px solid ${B.hairline}`, borderRadius: 10, overflow: 'hidden' }}>
                   {rules.map((rule, i) => (
                     <div key={rule.name} style={{
                       display: 'grid', gridTemplateColumns: '200px 140px 100px 80px',
                       alignItems: 'center',
-                      borderBottom: i < rules.length - 1 ? '1px solid var(--ds-border)' : 'none',
-                      background: 'var(--ds-bg-1)',
+                      borderBottom: i < rules.length - 1 ? `1px solid ${B.hairline}` : 'none',
+                      background: B.surface,
                     }}>
-                      <div style={{ padding: '9px 12px', borderRight: '1px solid var(--ds-border)' }}>
-                        <div style={{ fontSize: 10, fontFamily: FONTS.mono, color: 'var(--ds-text)', marginBottom: 2 }}>{rule.name}</div>
-                        <div style={{ fontSize: 8, fontFamily: FONTS.mono, color, textTransform: 'uppercase', letterSpacing: '0.04em' }}>{rule.scope}</div>
+                      <div style={{ padding: '9px 12px', borderRight: `1px solid ${B.hairline}` }}>
+                        <div style={{ fontSize: 13, fontFamily: 'var(--font-inter)', color: B.ink, marginBottom: 2 }}>{rule.name}</div>
+                        <div style={{ fontSize: 11, fontFamily: 'var(--font-inter)', fontWeight: 500, color, textTransform: 'uppercase' }}>{rule.scope}</div>
                       </div>
-                      <div style={{ padding: '9px 12px', borderRight: '1px solid var(--ds-border)' }}>
-                        <div style={{ fontSize: 8, fontFamily: FONTS.mono, color: 'var(--ds-muted)', marginBottom: 2 }}>TRIGGER</div>
-                        <div style={{ fontSize: 10, fontFamily: FONTS.mono, color: 'var(--ds-dim)' }}>{rule.trigger}</div>
+                      <div style={{ padding: '9px 12px', borderRight: `1px solid ${B.hairline}` }}>
+                        <div style={{ fontSize: 11, fontFamily: 'var(--font-inter)', color: B.ink3, marginBottom: 2 }}>TRIGGER</div>
+                        <div style={{ fontSize: 12, fontFamily: 'var(--font-inter)', color: B.ink2 }}>{rule.trigger}</div>
                       </div>
-                      <div style={{ padding: '9px 12px', borderRight: '1px solid var(--ds-border)' }}>
-                        <div style={{ fontSize: 8, fontFamily: FONTS.mono, color: 'var(--ds-muted)', marginBottom: 2 }}>INTERVAL</div>
-                        <div style={{ fontSize: 10, fontFamily: FONTS.mono, color: 'var(--ds-dim)' }}>{rule.interval}</div>
+                      <div style={{ padding: '9px 12px', borderRight: `1px solid ${B.hairline}` }}>
+                        <div style={{ fontSize: 11, fontFamily: 'var(--font-inter)', color: B.ink3, marginBottom: 2 }}>INTERVAL</div>
+                        <div style={{ fontSize: 12, fontFamily: 'var(--font-inter)', color: B.ink2 }}>{rule.interval}</div>
                       </div>
                       <div style={{ padding: '9px 12px' }}>
-                        <div style={{ fontSize: 8, fontFamily: FONTS.mono, color: 'var(--ds-muted)', marginBottom: 2 }}>ALERT</div>
-                        <div style={{ fontSize: 10, fontFamily: FONTS.mono, color: DS.yellow }}>{rule.threshold}</div>
+                        <div style={{ fontSize: 11, fontFamily: 'var(--font-inter)', color: B.ink3, marginBottom: 2 }}>ALERT</div>
+                        <div style={{ fontSize: 12, fontFamily: 'var(--font-inter)', color: B.amber }}>{rule.threshold}</div>
                       </div>
                     </div>
                   ))}

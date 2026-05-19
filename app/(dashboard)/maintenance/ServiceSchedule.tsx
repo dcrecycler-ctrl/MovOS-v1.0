@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { DS, FONTS } from '@/lib/tokens'
+import { B } from '@/lib/tokens'
 import { SectionLabel } from '@/components/ui/SectionLabel'
 import { StatusBadge }  from '@/components/ui/StatusBadge'
 import { DrillModal }   from '@/components/ui/DrillModal'
@@ -59,9 +59,9 @@ const SERVICES: UpcomingService[] = [
 ]
 
 const STATUS_COLOR: Record<ServiceStatus, string> = {
-  critical: DS.red,
-  warning:  DS.yellow,
-  on_track: DS.green,
+  critical: B.rose,
+  warning:  B.amber,
+  on_track: B.green,
 }
 
 const STATUS_LABEL: Record<ServiceStatus, string> = {
@@ -71,8 +71,8 @@ const STATUS_LABEL: Record<ServiceStatus, string> = {
 }
 
 const TYPE_COLOR: Record<ServiceType, string> = {
-  manufacturer: DS.blue,
-  internal:     DS.purple,
+  manufacturer: B.blue,
+  internal:     B.lilac,
 }
 
 // ─── ServiceSchedule ─────────────────────────────────────────────────────────
@@ -85,12 +85,15 @@ export function ServiceSchedule() {
   const urgentCount = SERVICES.filter(s => s.status !== 'on_track').length
 
   return (
-    <div style={{ border: '1px solid var(--ds-border)', background: 'var(--ds-bg-1)' }}>
+    <div style={{
+      border: `1px solid ${B.hairline}`, background: B.surface,
+      borderRadius: 14, boxShadow: B.shadowSm, overflow: 'hidden',
+    }}>
 
       {/* Header + tabs */}
-      <div style={{ padding: '14px 14px 0', borderBottom: '1px solid var(--ds-border)' }}>
+      <div style={{ padding: '14px 14px 0', borderBottom: `1px solid ${B.hairline}` }}>
         <div style={{ marginBottom: 10 }}>
-          <SectionLabel label="Upcoming Services" count={urgentCount} color={DS.blue} />
+          <SectionLabel label="Upcoming Services" count={urgentCount} color={B.blue} />
         </div>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           {(['all', 'manufacturer', 'internal'] as const).map(f => {
@@ -98,10 +101,10 @@ export function ServiceSchedule() {
             return (
               <button key={f} onClick={() => setFilter(f)} style={{
                 height: 32, padding: '0 14px',
-                fontSize: 9, fontFamily: FONTS.mono, textTransform: 'uppercase', letterSpacing: '0.08em',
-                color:      active ? DS.blue : 'var(--ds-dim)',
+                fontSize: 11, fontFamily: 'var(--font-inter)', textTransform: 'uppercase', letterSpacing: '0.06em',
+                color:      active ? B.blue : B.ink3,
                 background: 'transparent', border: 'none',
-                borderBottom: active ? `2px solid ${DS.blue}` : '2px solid transparent',
+                borderBottom: active ? `2px solid ${B.blue}` : '2px solid transparent',
                 cursor: 'pointer',
               }}>
                 {f === 'all' ? 'All' : f === 'manufacturer' ? 'Manufacturer' : 'Internal'}
@@ -118,37 +121,37 @@ export function ServiceSchedule() {
           onClick={() => setSelected(s)}
           style={{
             padding: '10px 14px',
-            borderBottom: i < rows.length - 1 ? '1px solid var(--ds-border)' : 'none',
+            borderBottom: i < rows.length - 1 ? `1px solid ${B.hairline}` : 'none',
             borderLeft: `2px solid ${STATUS_COLOR[s.status]}`,
             cursor: 'pointer',
           }}
-          onMouseEnter={e => (e.currentTarget.style.background = 'var(--ds-bg-2)')}
+          onMouseEnter={e => (e.currentTarget.style.background = B.surface2)}
           onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
         >
           {/* Top row: unit + badges */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ fontSize: 11, fontFamily: FONTS.mono, color: DS.gold }}>{s.unit}</span>
-              <span style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-dim)' }}>{s.plate}</span>
+              <span style={{ fontSize: 11, fontFamily: 'var(--font-inter)', color: B.amber, fontWeight: 700 }}>{s.unit}</span>
+              <span style={{ fontSize: 11, fontFamily: 'var(--font-inter)', color: B.ink2 }}>{s.plate}</span>
               <StatusBadge label={s.type === 'manufacturer' ? 'MFR' : 'INT'} color={TYPE_COLOR[s.type]} small />
             </div>
             <StatusBadge label={STATUS_LABEL[s.status]} color={STATUS_COLOR[s.status]} small />
           </div>
           {/* Service name */}
-          <div style={{ fontSize: 10, fontFamily: FONTS.mono, color: 'var(--ds-text)', marginBottom: 3 }}>
+          <div style={{ fontSize: 13, fontFamily: 'var(--font-inter)', color: B.ink, marginBottom: 3 }}>
             {s.serviceName}
           </div>
           {/* Due info + shop */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)' }}>
+            <div style={{ fontSize: 11, fontFamily: 'var(--font-inter)', color: B.ink3 }}>
               {s.dueKm !== '—' && <span style={{ marginRight: 8 }}>{s.dueKm}</span>}
               {s.dueDays !== null && (
-                <span style={{ color: s.dueDays <= 14 ? DS.yellow : 'var(--ds-muted)' }}>
+                <span style={{ color: s.dueDays <= 14 ? B.amber : B.ink3 }}>
                   {s.dueDays} days
                 </span>
               )}
             </div>
-            <span style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)' }}>{s.dealerShop}</span>
+            <span style={{ fontSize: 11, fontFamily: 'var(--font-inter)', color: B.ink3 }}>{s.dealerShop}</span>
           </div>
         </div>
       ))}
@@ -184,28 +187,28 @@ function ServiceDetail({ service: s, onClose }: { service: UpcomingService; onCl
   ]
   return (
     <div>
-      <div style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>
+      <div style={{ fontSize: 11, fontFamily: 'var(--font-inter)', color: B.ink3, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 8 }}>
         Service Info
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr', gap: 1, background: 'var(--ds-border)', marginBottom: 16 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr', gap: 1, background: B.surface3, borderRadius: 10, overflow: 'hidden', marginBottom: 16 }}>
         {ROWS.flatMap(row => [
-          <div key={`${row.label}-l`} style={{ padding: '7px 10px', background: 'var(--ds-bg-1)', fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>
+          <div key={`${row.label}-l`} style={{ padding: '7px 10px', background: B.surface2, fontSize: 11, fontFamily: 'var(--font-inter)', color: B.ink3, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             {row.label}
           </div>,
-          <div key={`${row.label}-v`} style={{ padding: '7px 10px', background: 'var(--ds-bg-1)', fontSize: 11, fontFamily: FONTS.mono, color: 'var(--ds-text)' }}>
+          <div key={`${row.label}-v`} style={{ padding: '7px 10px', background: B.surface, fontSize: 13, fontFamily: 'var(--font-inter)', color: B.ink }}>
             {row.value}
           </div>,
         ])}
       </div>
-      <div style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>
+      <div style={{ fontSize: 11, fontFamily: 'var(--font-inter)', color: B.ink3, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>
         Notes
       </div>
-      <div style={{ fontSize: 11, fontFamily: FONTS.mono, color: 'var(--ds-dim)', lineHeight: 1.6, padding: '8px 10px', border: '1px solid var(--ds-border)', background: 'var(--ds-bg-1)', marginBottom: 20 }}>
+      <div style={{ fontSize: 13, fontFamily: 'var(--font-inter)', color: B.ink2, lineHeight: 1.6, padding: '10px 12px', border: `1px solid ${B.hairline}`, background: B.surface2, borderRadius: 8, marginBottom: 20 }}>
         {s.notes}
       </div>
       <div style={{ display: 'flex', gap: 8 }}>
-        <ActionButton label="Schedule Service" color={DS.blue}  onClick={() => {}} />
-        <ActionButton label="Close"            color={DS.gold}  secondary onClick={onClose} />
+        <ActionButton label="Schedule Service" color={B.blue}  onClick={() => {}} />
+        <ActionButton label="Close"            color={B.amber} secondary onClick={onClose} />
       </div>
     </div>
   )
