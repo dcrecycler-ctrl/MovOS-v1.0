@@ -1,20 +1,21 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 import { B } from '@/lib/tokens'
 import { createClient } from '@/lib/supabase/client'
 
 const PRIMARY_NAV = [
   { label: 'Tablero',      href: '/' },
-  { label: 'Operaciones',  href: '#' },
-  { label: 'Flota',        href: '#' },
+  { label: 'Operaciones',  href: '/operations' },
+  { label: 'Flota',        href: '/fleet' },
   { label: 'Inspecciones', href: '/inspections' },
 ]
 const SECONDARY_NAV = [
   { label: 'Mantenimiento', href: '/maintenance' },
   { label: 'Contratos',     href: '/contracts' },
   { label: 'Analítica',     href: '/analitica' },
-  { label: 'Inteligencia',  href: '#', badge: 'beta' },
+  { label: 'Inteligencia',  href: '/intelligence', badge: 'beta' },
 ]
 const ADMIN_NAV = [
   { label: 'Usuarios',    href: '/admin/usuarios' },
@@ -34,12 +35,18 @@ interface TopBarProps {
   active?: string
 }
 
-export function TopBar({ active = 'Tablero' }: TopBarProps) {
+export function TopBar({ active: _active }: TopBarProps) {
+  const pathname = usePathname()
   const [menuOpen, setMenuOpen] = useState(false)
   const [userName, setUserName]     = useState('')
   const [userInitials, setUserInitials] = useState('--')
   const [userRole, setUserRole]     = useState('')
   const [isAdmin, setIsAdmin]       = useState(false)
+
+  const isActive = (href: string) => {
+    if (href === '/') return pathname === '/'
+    return pathname === href || pathname.startsWith(href + '/')
+  }
 
   useEffect(() => {
     const supabase = createClient()
@@ -82,18 +89,18 @@ export function TopBar({ active = 'Tablero' }: TopBarProps) {
 
           <nav className="hidden md:flex" style={{ gap: 6 }}>
             {PRIMARY_NAV.map(item => (
-              <NavLink key={item.label} label={item.label} href={item.href} active={active === item.label} />
+              <NavLink key={item.label} label={item.label} href={item.href} active={isActive(item.href)} />
             ))}
             {SECONDARY_NAV.map(item => (
               <span key={item.label} className="hidden lg:inline-flex">
-                <NavLink label={item.label} href={item.href} active={active === item.label} badge={item.badge} />
+                <NavLink label={item.label} href={item.href} active={isActive(item.href)} badge={item.badge} />
               </span>
             ))}
             {isAdmin && (
               <span className="hidden lg:inline-flex" style={{ alignItems: 'center', marginLeft: 4 }}>
                 <span style={{ width: 1, height: 16, background: B.hairline, display: 'inline-block', margin: '0 10px' }} />
                 {ADMIN_NAV.map(item => (
-                  <NavLink key={item.label} label={item.label} href={item.href} active={active === item.label} badge="admin" />
+                  <NavLink key={item.label} label={item.label} href={item.href} active={isActive(item.href)} badge="admin" />
                 ))}
               </span>
             )}
@@ -217,16 +224,19 @@ export function TopBar({ active = 'Tablero' }: TopBarProps) {
               style={{
                 display: 'flex', alignItems: 'center', gap: 8,
                 fontFamily: 'var(--font-inter)', fontSize: 14,
-                fontWeight: active === item.label ? 500 : 400,
-                color: active === item.label ? B.ink : B.ink2,
+                fontWeight: isActive(item.href) ? 500 : 400,
+                color: isActive(item.href) ? B.ink : B.ink2,
                 padding: '12px 8px',
                 borderBottom: `1px solid ${B.hairline}`,
                 textDecoration: 'none',
-                background: active === item.label ? B.surface2 : 'transparent',
+                background: isActive(item.href) ? B.surface2 : 'transparent',
                 borderRadius: 8,
               }}
             >
               {item.label}
+              {'badge' in item && item.badge === 'beta' && (
+                <span style={{ fontSize: 9, padding: '1px 6px', borderRadius: 9999, background: B.amberSoft, color: B.amber, fontWeight: 500 }}>beta</span>
+              )}
             </a>
           ))}
           {isAdmin && (
@@ -240,8 +250,8 @@ export function TopBar({ active = 'Tablero' }: TopBarProps) {
                   style={{
                     display: 'flex', alignItems: 'center', gap: 8,
                     fontFamily: 'var(--font-inter)', fontSize: 14,
-                    fontWeight: active === item.label ? 500 : 400,
-                    color: active === item.label ? B.ink : B.ink2,
+                    fontWeight: isActive(item.href) ? 500 : 400,
+                    color: isActive(item.href) ? B.ink : B.ink2,
                     padding: '12px 8px',
                     borderBottom: `1px solid ${B.hairline}`,
                     textDecoration: 'none',

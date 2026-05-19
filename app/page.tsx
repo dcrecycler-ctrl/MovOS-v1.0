@@ -50,7 +50,7 @@ export default async function DashboardPage() {
 
   return (
     <div style={{ minHeight: '100vh', background: B.bg }}>
-      <TopBar active="Tablero" />
+      <TopBar />
       <DashboardContent
         firstName={firstName}
         stats={statsResult.data}
