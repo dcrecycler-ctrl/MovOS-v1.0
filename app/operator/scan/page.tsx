@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { Suspense, useEffect, useRef, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { B } from '@/lib/tokens'
 import { getVehicleByUnitId } from '@/lib/supabase/queries/operator'
@@ -15,7 +15,7 @@ function parseQrPayload(raw: string): string | null {
   return null
 }
 
-export default function ScanPage() {
+function ScanPageInner() {
   const router       = useRouter()
   const searchParams = useSearchParams()
   const redirectTo   = searchParams.get('redirect')
@@ -255,4 +255,8 @@ export default function ScanPage() {
       `}</style>
     </div>
   )
+}
+
+export default function ScanPage() {
+  return <Suspense><ScanPageInner /></Suspense>
 }

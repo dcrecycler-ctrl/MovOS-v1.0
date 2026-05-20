@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { B } from '@/lib/tokens'
@@ -16,7 +16,7 @@ const STAGES = [
   'Retornado a flota',
 ]
 
-export default function MaintenancePage() {
+function MaintenancePageInner() {
   const router        = useRouter()
   const searchParams  = useSearchParams()
   const [vehicle,     setVehicle]    = useState<OperatorVehicle | null>(null)
@@ -278,4 +278,8 @@ export default function MaintenancePage() {
       )}
     </div>
   )
+}
+
+export default function MaintenancePage() {
+  return <Suspense><MaintenancePageInner /></Suspense>
 }
