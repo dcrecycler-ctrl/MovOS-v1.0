@@ -55,7 +55,7 @@ export function RenewalTimeline() {
 
       {/* Header */}
       <div style={{ padding: '14px 14px 12px', borderBottom: '1px solid var(--ds-border)' }}>
-        <SectionLabel label="Renewal Calendar" color={DS.orange} />
+        <SectionLabel label="Calendario de Renovaciones" color={DS.orange} />
       </div>
 
       {/* Legend */}
@@ -168,7 +168,7 @@ export function RenewalTimeline() {
                 {/* Action */}
                 <div style={{ flexShrink: 0 }}>
                   <ActionButton
-                    label="Renew"
+                    label="Renovar"
                     color={c.daysRemaining <= 60 ? DS.orange : DS.slate}
                     secondary
                     onClick={() => {}}

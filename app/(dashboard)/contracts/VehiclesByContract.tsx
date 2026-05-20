@@ -127,7 +127,7 @@ export function VehiclesByContract() {
   return (
     <div>
       <div style={{ marginBottom: 12 }}>
-        <SectionLabel label="Vehicles by Contract" count={rows.length} color={DS.blue} />
+        <SectionLabel label="Vehículos por Contrato" count={rows.length} color={DS.blue} />
       </div>
 
       {/* Filter tabs */}

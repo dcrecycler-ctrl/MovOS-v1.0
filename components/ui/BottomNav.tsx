@@ -53,11 +53,11 @@ function ContractsIcon() {
 // ─── Nav items ────────────────────────────────────────────────────────────────
 
 const NAV_ITEMS = [
-  { label: 'Dashboard',   href: '/',              Icon: DashIcon      },
-  { label: 'Fleet',       href: '/flota',         Icon: FleetIcon     },
-  { label: 'Operations',  href: '/operaciones',   Icon: OpsIcon       },
-  { label: 'Maintenance', href: '/mantenimiento', Icon: MaintIcon     },
-  { label: 'Contracts',   href: '/contratos',     Icon: ContractsIcon },
+  { label: 'Tablero',      href: '/',           Icon: DashIcon      },
+  { label: 'Flota',        href: '/fleet',      Icon: FleetIcon     },
+  { label: 'Operaciones',  href: '/operations', Icon: OpsIcon       },
+  { label: 'Mantenimiento',href: '/maintenance',Icon: MaintIcon     },
+  { label: 'Contratos',    href: '/contracts',  Icon: ContractsIcon },
 ]
 
 // ─── BottomNav ────────────────────────────────────────────────────────────────

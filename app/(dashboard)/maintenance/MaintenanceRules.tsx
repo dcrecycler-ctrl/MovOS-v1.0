@@ -141,8 +141,8 @@ export function MaintenanceRules() {
                 ))}
               </div>
               <div style={{ display: 'flex', gap: 8 }}>
-                <ActionButton label="Save Rule" color={B.amber} onClick={() => setShowForm(false)} />
-                <ActionButton label="Cancel"    color={B.amber} secondary onClick={() => setShowForm(false)} />
+                <ActionButton label="Guardar Regla" color={B.amber} onClick={() => setShowForm(false)} />
+                <ActionButton label="Cancelar"      color={B.amber} secondary onClick={() => setShowForm(false)} />
               </div>
             </div>
           )}

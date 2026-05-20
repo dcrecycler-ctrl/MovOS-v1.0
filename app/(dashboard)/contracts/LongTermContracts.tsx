@@ -163,10 +163,10 @@ function ContractCard({
 
         {/* Action buttons */}
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-          <ActionButton label="View Vehicles" color={DS.blue}   onClick={onToggle} />
-          <ActionButton label="Edit"          color={DS.gold}   secondary onClick={() => {}} />
-          <ActionButton label="Renew"         color={c.status === 'expiring' ? DS.orange : DS.gold} secondary onClick={() => {}} />
-          <ActionButton label="Export"        color={DS.slate}  secondary onClick={() => {}} />
+          <ActionButton label="Ver Vehículos" color={DS.blue}   onClick={onToggle} />
+          <ActionButton label="Editar"        color={DS.gold}   secondary onClick={() => {}} />
+          <ActionButton label="Renovar"       color={c.status === 'expiring' ? DS.orange : DS.gold} secondary onClick={() => {}} />
+          <ActionButton label="Exportar"      color={DS.slate}  secondary onClick={() => {}} />
         </div>
       </div>
 

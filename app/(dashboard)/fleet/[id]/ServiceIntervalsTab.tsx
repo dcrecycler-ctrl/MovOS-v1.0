@@ -160,8 +160,8 @@ export function ServiceIntervalsTab() {
                 <textarea placeholder="Describe what this service includes..." style={{ width: '100%', height: 56, padding: '8px 10px', fontSize: 11, fontFamily: FONTS.mono, color: 'var(--ds-text)', background: 'var(--ds-bg-1)', border: '1px solid var(--ds-border)', borderRadius: 0, outline: 'none', resize: 'none' }} />
               </div>
               <div style={{ display: 'flex', gap: 8 }}>
-                <ActionButton label="Save Entry"  color={DS.gold} onClick={() => setShowForm(false)} />
-                <ActionButton label="Cancel"      color={DS.gold} secondary onClick={() => setShowForm(false)} />
+                <ActionButton label="Guardar"     color={DS.gold} onClick={() => setShowForm(false)} />
+                <ActionButton label="Cancelar"    color={DS.gold} secondary onClick={() => setShowForm(false)} />
               </div>
             </div>
           )}

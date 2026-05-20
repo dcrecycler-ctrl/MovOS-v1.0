@@ -163,13 +163,13 @@ export function AlertsTab({ unitId }: { unitId: string }) {
           {/* Submit row */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <ActionButton
-              label="Submit Alert"
+              label="Enviar Alerta"
               color={LEVEL_COLOR[level]}
               onClick={submit}
             />
             {submitted && (
               <span style={{ fontSize: 10, fontFamily: FONTS.mono, color: DS.green, letterSpacing: '0.06em' }}>
-                ✓ Alert created
+                ✓ Alerta creada
               </span>
             )}
           </div>
@@ -179,12 +179,12 @@ export function AlertsTab({ unitId }: { unitId: string }) {
       {/* ── Active alerts ── */}
       <div>
         <div style={{ marginBottom: 14 }}>
-          <SectionLabel label="Active Alerts" count={alerts.filter(a => a.status === 'open').length} color={DS.red} />
+          <SectionLabel label="Alertas Activas" count={alerts.filter(a => a.status === 'open').length} color={DS.red} />
         </div>
 
         {alerts.length === 0 ? (
           <div style={{ padding: '24px 16px', fontSize: 10, fontFamily: FONTS.mono, color: 'var(--ds-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-            No active alerts
+            Sin alertas activas
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 1, background: 'var(--ds-border)' }}>
@@ -214,7 +214,7 @@ export function AlertsTab({ unitId }: { unitId: string }) {
                       color: 'var(--ds-dim)', background: 'transparent',
                       border: '1px solid var(--ds-border)', borderRadius: 0, cursor: 'pointer',
                     }}
-                    title="Acknowledge"
+                    title="Confirmar"
                   >
                     ✓
                   </button>

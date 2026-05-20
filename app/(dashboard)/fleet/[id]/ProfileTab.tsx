@@ -148,99 +148,99 @@ export function ProfileTab({ vehicle, documents }: { vehicle: MockVehicle; docum
     <div style={{ maxWidth: 860 }}>
 
       {/* ── Identity ── */}
-      <SectionBlock label="Identity" color={DS.gold}>
+      <SectionBlock label="Identificación" color={DS.gold}>
         <FieldGrid>
-          <FieldRow label="Unit ID"          value={vehicle.unitId}      accent={DS.gold} />
-          <FieldRow label="VIN"              value={vehicle.vin} />
-          <FieldRow label="Plate"            value={vehicle.plate} />
-          <FieldRow label="Make"             value={vehicle.make} />
-          <FieldRow label="Model"            value={vehicle.model} />
-          <FieldRow label="Year"             value={vehicle.year} />
-          <FieldRow label="Color"            value={vehicle.color} />
-          <FieldRow label="Category"         value={vehicle.category} />
-          <FieldRow label="Branch"           value={vehicle.locationName} />
-          <FieldRow label="Acquisition Date" value={new Date(vehicle.acquisitionDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })} />
-          <FieldRow label="Acquisition Cost" value={`USD ${vehicle.acquisitionCost.toLocaleString()}`} />
-          <FieldRow label="Odometer"         value={`${vehicle.odometer.toLocaleString()} km`} />
+          <FieldRow label="ID Unidad"          value={vehicle.unitId}      accent={DS.gold} />
+          <FieldRow label="VIN"                value={vehicle.vin} />
+          <FieldRow label="Patente"            value={vehicle.plate} />
+          <FieldRow label="Marca"              value={vehicle.make} />
+          <FieldRow label="Modelo"             value={vehicle.model} />
+          <FieldRow label="Año"                value={vehicle.year} />
+          <FieldRow label="Color"              value={vehicle.color} />
+          <FieldRow label="Categoría"          value={vehicle.category} />
+          <FieldRow label="Sucursal"           value={vehicle.locationName} />
+          <FieldRow label="Fecha de Adquisición" value={new Date(vehicle.acquisitionDate).toLocaleDateString('es-UY', { day: '2-digit', month: 'short', year: 'numeric' })} />
+          <FieldRow label="Costo de Adquisición" value={`USD ${vehicle.acquisitionCost.toLocaleString()}`} />
+          <FieldRow label="Odómetro"           value={`${vehicle.odometer.toLocaleString()} km`} />
         </FieldGrid>
       </SectionBlock>
 
       {/* ── Mechanical ── */}
-      <SectionBlock label="Mechanical" color={DS.blue}>
+      <SectionBlock label="Mecánica" color={DS.blue}>
         <FieldGrid>
-          <FieldRow label="Engine Type"      value={vehicle.engineType} />
-          <FieldRow label="Displacement"     value={vehicle.displacement} />
-          <FieldRow label="Transmission"     value={vehicle.transmission} />
-          <FieldRow label="Drive Type"       value={vehicle.driveType} />
-          <FieldRow label="Fuel Type"        value={vehicle.fuelType} />
-          <FieldRow label="Tank Capacity"    value={`${vehicle.tankCapacity} L`} />
-          <FieldRow label="Tire Size"        value={vehicle.tireSize} />
-          <FieldRow label="Seating Capacity" value={`${vehicle.seatingCapacity} seats`} />
-          <FieldRow label="Cargo Volume"     value={vehicle.cargoVolume} />
-          <FieldRow label="Tow Rating"       value={vehicle.towRating} />
+          <FieldRow label="Tipo de Motor"    value={vehicle.engineType} />
+          <FieldRow label="Cilindrada"       value={vehicle.displacement} />
+          <FieldRow label="Transmisión"      value={vehicle.transmission} />
+          <FieldRow label="Tracción"         value={vehicle.driveType} />
+          <FieldRow label="Combustible"      value={vehicle.fuelType} />
+          <FieldRow label="Cap. Tanque"      value={`${vehicle.tankCapacity} L`} />
+          <FieldRow label="Neumáticos"       value={vehicle.tireSize} />
+          <FieldRow label="Pasajeros"        value={`${vehicle.seatingCapacity} asientos`} />
+          <FieldRow label="Vol. Carga"       value={vehicle.cargoVolume} />
+          <FieldRow label="Cap. Remolque"    value={vehicle.towRating} />
         </FieldGrid>
       </SectionBlock>
 
       {/* ── Special Equipment ── */}
-      <SectionBlock label="Special Equipment" color={DS.purple}>
+      <SectionBlock label="Equipamiento Especial" color={DS.purple}>
         <div style={{ fontSize: 9, fontFamily: FONTS.mono, color: 'var(--ds-muted)', letterSpacing: '0.06em', marginBottom: 10 }}>
-          TOGGLE ON TO ACTIVATE — UNLOCKS LINKED SERVICE INTERVALS
+          ACTIVAR PARA HABILITAR — DESBLOQUEA INTERVALOS VINCULADOS
         </div>
 
-        <EquipmentRow label="GPS Tracker" on={eq.gps} onChange={() => toggle('gps')}>
+        <EquipmentRow label="GPS" on={eq.gps} onChange={() => toggle('gps')}>
           <ExtraFields fields={[
-            { label: 'Provider',  value: vehicle.gpsProvider },
-            { label: 'Device ID', value: vehicle.gpsDeviceId },
+            { label: 'Proveedor',      value: vehicle.gpsProvider },
+            { label: 'ID Dispositivo', value: vehicle.gpsDeviceId },
           ]} />
         </EquipmentRow>
 
-        <EquipmentRow label="Dashcam" on={eq.dashcam} onChange={() => toggle('dashcam')}>
+        <EquipmentRow label="Cámara de a Bordo" on={eq.dashcam} onChange={() => toggle('dashcam')}>
           <ExtraFields fields={[
-            { label: 'Channels', value: vehicle.dashcamChannels },
-            { label: 'Storage',  value: vehicle.dashcamStorage  },
+            { label: 'Canales',        value: vehicle.dashcamChannels },
+            { label: 'Almacenamiento', value: vehicle.dashcamStorage  },
           ]} />
         </EquipmentRow>
 
-        <EquipmentRow label="Toll Tag"         on={eq.tollTag}        onChange={() => toggle('tollTag')}>
-          <ExtraFields fields={[{ label: 'Tag ID', value: 'Not configured' }]} />
+        <EquipmentRow label="Tag de Peaje" on={eq.tollTag} onChange={() => toggle('tollTag')}>
+          <ExtraFields fields={[{ label: 'ID Tag', value: 'Sin configurar' }]} />
         </EquipmentRow>
 
-        <EquipmentRow label="Tow Hook" on={eq.towHook} onChange={() => toggle('towHook')}>
-          <ExtraFields fields={[{ label: 'Capacity', value: vehicle.towHookCapacity }]} />
+        <EquipmentRow label="Gancho de Arrastre" on={eq.towHook} onChange={() => toggle('towHook')}>
+          <ExtraFields fields={[{ label: 'Capacidad', value: vehicle.towHookCapacity }]} />
         </EquipmentRow>
 
-        <EquipmentRow label="ISOFIX Child Seat Anchors" on={eq.isofix} onChange={() => toggle('isofix')}>
-          <ExtraFields fields={[{ label: 'Positions', value: 'Rear row — 2 anchor points' }]} />
+        <EquipmentRow label="Anclajes ISOFIX" on={eq.isofix} onChange={() => toggle('isofix')}>
+          <ExtraFields fields={[{ label: 'Posiciones', value: 'Fila trasera — 2 puntos' }]} />
         </EquipmentRow>
 
-        <EquipmentRow label="Wheelchair Lift" on={eq.wheelchairLift} onChange={() => toggle('wheelchairLift')}>
+        <EquipmentRow label="Rampa Silla de Ruedas" on={eq.wheelchairLift} onChange={() => toggle('wheelchairLift')}>
           <ExtraFields fields={[
-            { label: 'Capacity', value: 'Not configured' },
-            { label: 'Brand',    value: 'Not configured' },
+            { label: 'Capacidad', value: 'Sin configurar' },
+            { label: 'Marca',     value: 'Sin configurar' },
           ]} />
         </EquipmentRow>
 
-        <EquipmentRow label="Roof Rack" on={eq.roofRack} onChange={() => toggle('roofRack')}>
-          <ExtraFields fields={[{ label: 'Load Rating', value: vehicle.roofRackLoad }]} />
+        <EquipmentRow label="Portaequipajes" on={eq.roofRack} onChange={() => toggle('roofRack')}>
+          <ExtraFields fields={[{ label: 'Carga Máx.', value: vehicle.roofRackLoad }]} />
         </EquipmentRow>
 
-        <EquipmentRow label="Refrigeration Unit" on={eq.refrigeration} onChange={() => toggle('refrigeration')}>
+        <EquipmentRow label="Unidad de Refrigeración" on={eq.refrigeration} onChange={() => toggle('refrigeration')}>
           <ExtraFields fields={[
-            { label: 'Temp Range', value: 'Not configured' },
-            { label: 'Brand',      value: 'Not configured' },
+            { label: 'Rango Temp.', value: 'Sin configurar' },
+            { label: 'Marca',       value: 'Sin configurar' },
           ]} />
         </EquipmentRow>
 
-        <EquipmentRow label="Work Van Fitout" on={eq.workVan} onChange={() => toggle('workVan')}>
+        <EquipmentRow label="Acond. Furgón" on={eq.workVan} onChange={() => toggle('workVan')}>
           <ExtraFields fields={[
-            { label: 'Fitout Type',     value: 'Not configured' },
-            { label: 'Date Installed',  value: 'Not configured' },
+            { label: 'Tipo de Acond.',       value: 'Sin configurar' },
+            { label: 'Fecha de Instalación', value: 'Sin configurar' },
           ]} />
         </EquipmentRow>
       </SectionBlock>
 
-      {/* ── Documents ── */}
-      <SectionBlock label="Documents" color={DS.green}>
+      {/* ── Documentos ── */}
+      <SectionBlock label="Documentos" color={DS.green}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 1, background: 'var(--ds-border)' }}>
           {documents.map(doc => {
             const days = daysRemaining(doc.expiry)
@@ -266,10 +266,10 @@ export function ProfileTab({ vehicle, documents }: { vehicle: MockVehicle; docum
                     color, border: `1px solid ${color}54`, background: `${color}1C`,
                     padding: '2px 7px',
                   }}>
-                    {days < 0 ? `EXPIRED ${Math.abs(days)}d ago` : `${days}d remaining`}
+                    {days < 0 ? `VENCIDO hace ${Math.abs(days)}d` : `${days}d restantes`}
                   </span>
                   <a href={doc.fileUrl} style={{ fontSize: 9, fontFamily: FONTS.mono, color: DS.blue, letterSpacing: '0.06em', textDecoration: 'none' }}>
-                    VIEW ↗
+                    VER ↗
                   </a>
                 </div>
               </div>
@@ -279,24 +279,24 @@ export function ProfileTab({ vehicle, documents }: { vehicle: MockVehicle; docum
       </SectionBlock>
 
       {/* ── Last Service ── */}
-      <SectionBlock label="Last Service" color={DS.orange}>
+      <SectionBlock label="Último Servicio" color={DS.orange}>
         <FieldGrid>
-          <FieldRow label="Service Type"  value={vehicle.lastServiceType} />
-          <FieldRow label="Date"          value={new Date(vehicle.lastServiceDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })} />
-          <FieldRow label="Odometer"      value={`${vehicle.lastServiceOdometer.toLocaleString()} km`} />
-          <FieldRow label="Dealer"        value={vehicle.lastServiceDealer} />
-          <FieldRow label="Stamp Ref."    value={vehicle.lastServiceStamp} />
-          <FieldRow label="Document"      value="service-record-apr2026.pdf" accent={DS.blue} />
+          <FieldRow label="Tipo de Servicio" value={vehicle.lastServiceType} />
+          <FieldRow label="Fecha"            value={new Date(vehicle.lastServiceDate).toLocaleDateString('es-UY', { day: '2-digit', month: 'short', year: 'numeric' })} />
+          <FieldRow label="Odómetro"         value={`${vehicle.lastServiceOdometer.toLocaleString()} km`} />
+          <FieldRow label="Concesionario"    value={vehicle.lastServiceDealer} />
+          <FieldRow label="Ref. Sello"       value={vehicle.lastServiceStamp} />
+          <FieldRow label="Documento"        value="service-record-apr2026.pdf" accent={DS.blue} />
         </FieldGrid>
       </SectionBlock>
 
       {/* ── Odometer & Fuel ── */}
-      <SectionBlock label="Odometer & Fuel" color={DS.slate}>
+      <SectionBlock label="Odómetro y Combustible" color={DS.slate}>
         <FieldGrid>
-          <FieldRow label="Current Odometer"  value={`${vehicle.odometer.toLocaleString()} km`} accent={DS.gold} />
-          <FieldRow label="Odometer at Entry" value={`${vehicle.odometerAtEntry.toLocaleString()} km`} />
-          <FieldRow label="Total Fleet km"    value={`${(vehicle.odometer - vehicle.odometerAtEntry).toLocaleString()} km`} />
-          <FieldRow label="Last Fuel Level"   value={`${vehicle.fuelLevel}%`} accent={vehicle.fuelLevel > 50 ? DS.green : vehicle.fuelLevel > 25 ? DS.yellow : DS.red} />
+          <FieldRow label="Odómetro Actual"    value={`${vehicle.odometer.toLocaleString()} km`} accent={DS.gold} />
+          <FieldRow label="Odómetro de Ingreso" value={`${vehicle.odometerAtEntry.toLocaleString()} km`} />
+          <FieldRow label="km en Flota"         value={`${(vehicle.odometer - vehicle.odometerAtEntry).toLocaleString()} km`} />
+          <FieldRow label="Último Nivel Comb."  value={`${vehicle.fuelLevel}%`} accent={vehicle.fuelLevel > 50 ? DS.green : vehicle.fuelLevel > 25 ? DS.yellow : DS.red} />
         </FieldGrid>
       </SectionBlock>
 

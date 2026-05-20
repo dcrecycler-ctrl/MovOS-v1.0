@@ -207,8 +207,8 @@ function ServiceDetail({ service: s, onClose }: { service: UpcomingService; onCl
         {s.notes}
       </div>
       <div style={{ display: 'flex', gap: 8 }}>
-        <ActionButton label="Schedule Service" color={B.blue}  onClick={() => {}} />
-        <ActionButton label="Close"            color={B.amber} secondary onClick={onClose} />
+        <ActionButton label="Agendar Servicio" color={B.blue}  onClick={() => {}} />
+        <ActionButton label="Cerrar"           color={B.amber} secondary onClick={onClose} />
       </div>
     </div>
   )

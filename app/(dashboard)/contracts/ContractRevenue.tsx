@@ -30,7 +30,7 @@ export function ContractRevenue() {
 
       {/* Header */}
       <div style={{ padding: '14px 14px 12px', borderBottom: '1px solid var(--ds-border)' }}>
-        <SectionLabel label="Revenue Overview" color={DS.lime} />
+        <SectionLabel label="Resumen de Ingresos" color={DS.lime} />
       </div>
 
       {/* Total monthly */}
