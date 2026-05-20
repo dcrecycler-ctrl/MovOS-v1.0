@@ -1,6 +1,21 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+const OPERATOR_ROLES = ['operator', 'inspector', 'mechanic']
+
+async function getUserRole(supabase: ReturnType<typeof createServerClient>, userId: string): Promise<string | null> {
+  try {
+    const { data } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', userId)
+      .single()
+    return data?.role ?? null
+  } catch {
+    return null
+  }
+}
+
 export async function middleware(request: NextRequest) {
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     return NextResponse.next({ request })
@@ -39,11 +54,22 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  // Has session but on login page → send to dashboard
+  // Has session but on login page → send to correct home based on role
   if (user && isLoginPage) {
+    const role = await getUserRole(supabase, user.id)
     const url = request.nextUrl.clone()
-    url.pathname = '/'
+    url.pathname = role && OPERATOR_ROLES.includes(role) ? '/operator/tasks' : '/'
     return NextResponse.redirect(url)
+  }
+
+  // /operator/* routes: only operator/inspector/mechanic roles allowed
+  if (user && pathname.startsWith('/operator')) {
+    const role = await getUserRole(supabase, user.id)
+    if (!role || !OPERATOR_ROLES.includes(role)) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/'
+      return NextResponse.redirect(url)
+    }
   }
 
   return supabaseResponse
