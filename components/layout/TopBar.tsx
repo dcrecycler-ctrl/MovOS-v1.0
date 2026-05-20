@@ -1,23 +1,39 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import { B } from '@/lib/tokens'
 import { createClient } from '@/lib/supabase/client'
 
-const PRIMARY_NAV = [
-  { label: 'Tablero',      href: '/' },
-  { label: 'Operaciones',  href: '/operations' },
-  { label: 'Flota',        href: '/fleet' },
-  { label: 'Inspecciones', href: '/inspections' },
+// ─── Nav config ───────────────────────────────────────────────────────────────
+
+type NavItem = { label: string; href: string; badge?: string }
+type NavGroup = { label: string; href?: string; badge?: string; children?: NavItem[] }
+
+const PRIMARY_NAV: NavGroup[] = [
+  { label: 'Tablero',   href: '/'         },
+  {
+    label: 'Operaciones',
+    children: [
+      { label: 'Inspecciones',  href: '/inspections' },
+      { label: 'Mantenimiento', href: '/maintenance'  },
+    ],
+  },
+  { label: 'Flota',     href: '/fleet'     },
+  { label: 'Contratos', href: '/contracts' },
 ]
-const SECONDARY_NAV = [
-  { label: 'Mantenimiento', href: '/maintenance' },
-  { label: 'Contratos',     href: '/contracts' },
-  { label: 'Analítica',     href: '/analitica' },
-  { label: 'Inteligencia',  href: '/intelligence', badge: 'beta' },
+
+const SECONDARY_NAV: NavGroup[] = [
+  {
+    label: 'Analítica',
+    children: [
+      { label: 'Analítica',    href: '/analitica'    },
+      { label: 'Inteligencia', href: '/intelligence', badge: 'beta' },
+    ],
+  },
 ]
-const ADMIN_NAV = [
+
+const ADMIN_NAV: NavItem[] = [
   { label: 'Usuarios',    href: '/admin/usuarios' },
   { label: 'Proveedores', href: '/admin/vendors'  },
   { label: 'Talleres',    href: '/admin/talleres' },
@@ -31,21 +47,35 @@ const ROLE_LABEL: Record<string, string> = {
   mechanic:   'Mecánico',
 }
 
-interface TopBarProps {
-  active?: string
-}
+// ─── TopBar ──────────────────────────────────────────────────────────────────
 
-export function TopBar({ active: _active }: TopBarProps) {
+export function TopBar({ active: _active }: { active?: string } = {}) {
   const pathname = usePathname()
-  const [menuOpen, setMenuOpen] = useState(false)
-  const [userName, setUserName]     = useState('')
+  const [menuOpen,    setMenuOpen]    = useState(false)
+  const [openDD,      setOpenDD]      = useState<string | null>(null)
+  const [userName,    setUserName]    = useState('')
   const [userInitials, setUserInitials] = useState('--')
-  const [userRole, setUserRole]     = useState('')
-  const [isAdmin, setIsAdmin]       = useState(false)
+  const [userRole,    setUserRole]    = useState('')
+  const [isAdmin,     setIsAdmin]     = useState(false)
+  const ddTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const isActive = (href: string) => {
     if (href === '/') return pathname === '/'
     return pathname === href || pathname.startsWith(href + '/')
+  }
+
+  const isGroupActive = (group: NavGroup) => {
+    if (group.href && isActive(group.href)) return true
+    return group.children?.some(c => isActive(c.href)) ?? false
+  }
+
+  function hoverOpen(label: string) {
+    if (ddTimer.current) clearTimeout(ddTimer.current)
+    setOpenDD(label)
+  }
+
+  function hoverClose() {
+    ddTimer.current = setTimeout(() => setOpenDD(null), 100)
   }
 
   useEffect(() => {
@@ -71,6 +101,12 @@ export function TopBar({ active: _active }: TopBarProps) {
     })
   }, [])
 
+  // flat list for mobile drawer
+  const allMobileItems: NavItem[] = [
+    ...PRIMARY_NAV.flatMap(g => g.children ?? (g.href ? [{ label: g.label, href: g.href }] : [])),
+    ...SECONDARY_NAV.flatMap(g => g.children ?? (g.href ? [{ label: g.label, href: g.href, badge: g.badge }] : [])),
+  ]
+
   return (
     <div style={{ background: B.bg, borderBottom: `1px solid ${B.hairline}`, position: 'sticky', top: 0, zIndex: 10 }}>
       {/* Main bar */}
@@ -87,13 +123,34 @@ export function TopBar({ active: _active }: TopBarProps) {
             <span style={{ fontFamily: 'var(--font-inter)', fontSize: 16, fontWeight: 600, color: B.ink, letterSpacing: '-0.01em' }}>MovOS</span>
           </a>
 
-          <nav className="hidden md:flex" style={{ gap: 6 }}>
-            {PRIMARY_NAV.map(item => (
-              <NavLink key={item.label} label={item.label} href={item.href} active={isActive(item.href)} />
+          <nav className="hidden md:flex" style={{ gap: 4, position: 'relative' }}>
+            {PRIMARY_NAV.map(group => (
+              <NavGroupItem
+                key={group.label}
+                group={group}
+                active={isGroupActive(group)}
+                childActive={c => isActive(c.href)}
+                isOpen={openDD === group.label}
+                onEnter={() => group.children && hoverOpen(group.label)}
+                onLeave={() => group.children && hoverClose()}
+                onDropdownEnter={() => hoverOpen(group.label)}
+                onDropdownLeave={hoverClose}
+                onSelect={() => setOpenDD(null)}
+              />
             ))}
-            {SECONDARY_NAV.map(item => (
-              <span key={item.label} className="hidden lg:inline-flex">
-                <NavLink label={item.label} href={item.href} active={isActive(item.href)} badge={item.badge} />
+            {SECONDARY_NAV.map(group => (
+              <span key={group.label} className="hidden lg:inline-flex" style={{ position: 'relative' }}>
+                <NavGroupItem
+                  group={group}
+                  active={isGroupActive(group)}
+                  childActive={c => isActive(c.href)}
+                  isOpen={openDD === group.label}
+                  onEnter={() => group.children && hoverOpen(group.label)}
+                  onLeave={() => group.children && hoverClose()}
+                  onDropdownEnter={() => hoverOpen(group.label)}
+                  onDropdownLeave={hoverClose}
+                  onSelect={() => setOpenDD(null)}
+                />
               </span>
             ))}
             {isAdmin && (
@@ -216,9 +273,9 @@ export function TopBar({ active: _active }: TopBarProps) {
       {/* Mobile drawer */}
       {menuOpen && (
         <div className="md:hidden" style={{ borderTop: `1px solid ${B.hairline}`, padding: '12px 16px 16px' }}>
-          {[...PRIMARY_NAV, ...SECONDARY_NAV].map(item => (
+          {allMobileItems.map(item => (
             <a
-              key={item.label}
+              key={item.href}
               href={item.href}
               onClick={() => setMenuOpen(false)}
               style={{
@@ -234,7 +291,7 @@ export function TopBar({ active: _active }: TopBarProps) {
               }}
             >
               {item.label}
-              {'badge' in item && item.badge === 'beta' && (
+              {item.badge === 'beta' && (
                 <span style={{ fontSize: 9, padding: '1px 6px', borderRadius: 9999, background: B.amberSoft, color: B.amber, fontWeight: 500 }}>beta</span>
               )}
             </a>
@@ -258,7 +315,7 @@ export function TopBar({ active: _active }: TopBarProps) {
                   }}
                 >
                   {item.label}
-                  <span style={{ fontSize: 9, padding: '1px 6px', borderRadius: 9999, background: B.amberSoft, color: B.amber, fontWeight: 500 }}>admin</span>
+                  <span style={{ fontSize: 9, padding: '1px 5px', borderRadius: 9999, background: B.amberSoft, color: B.amber, fontWeight: 600 }}>admin</span>
                 </a>
               ))}
             </>
@@ -283,6 +340,94 @@ export function TopBar({ active: _active }: TopBarProps) {
     </div>
   )
 }
+
+// ─── NavGroupItem ─────────────────────────────────────────────────────────────
+
+function NavGroupItem({
+  group, active, childActive, isOpen,
+  onEnter, onLeave, onDropdownEnter, onDropdownLeave, onSelect,
+}: {
+  group: NavGroup
+  active: boolean
+  childActive: (c: NavItem) => boolean
+  isOpen: boolean
+  onEnter: () => void
+  onLeave: () => void
+  onDropdownEnter: () => void
+  onDropdownLeave: () => void
+  onSelect: () => void
+}) {
+  const hasChildren = !!group.children?.length
+
+  return (
+    <div
+      style={{ position: 'relative', display: 'inline-flex' }}
+      onMouseEnter={onEnter}
+      onMouseLeave={onLeave}
+    >
+      {group.href ? (
+        <NavLink label={group.label} href={group.href} active={active} badge={group.badge} />
+      ) : (
+        <button style={{
+          fontFamily: 'var(--font-inter)', fontSize: 13, fontWeight: active ? 500 : 400,
+          color: active ? B.ink : B.ink3,
+          padding: '8px 12px', borderRadius: 9999,
+          background: active ? B.surface : 'transparent',
+          boxShadow: active ? B.shadowSm : 'none',
+          border: 'none', cursor: 'pointer',
+          display: 'inline-flex', alignItems: 'center', gap: 4,
+          whiteSpace: 'nowrap',
+        }}>
+          {group.label}
+          {hasChildren && (
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
+              style={{ opacity: 0.5, transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }}>
+              <path d="m6 9 6 6 6-6"/>
+            </svg>
+          )}
+        </button>
+      )}
+
+      {hasChildren && isOpen && (
+        <div
+          onMouseEnter={onDropdownEnter}
+          onMouseLeave={onDropdownLeave}
+          style={{
+            position: 'absolute', top: 'calc(100% + 6px)', left: 0, zIndex: 50,
+            background: B.surface, border: `1px solid ${B.hairline}`,
+            borderRadius: 12, padding: 6,
+            boxShadow: '0 4px 6px rgba(14,23,38,0.06), 0 12px 32px rgba(14,23,38,0.08)',
+            minWidth: 160,
+          }}
+        >
+          {group.children!.map(child => (
+            <a
+              key={child.href}
+              href={child.href}
+              onClick={onSelect}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 6,
+                padding: '9px 12px', borderRadius: 8,
+                fontFamily: 'var(--font-inter)', fontSize: 13,
+                fontWeight: childActive(child) ? 500 : 400,
+                color: childActive(child) ? B.ink : B.ink2,
+                background: childActive(child) ? B.surface2 : 'transparent',
+                textDecoration: 'none', whiteSpace: 'nowrap',
+              }}
+            >
+              {child.label}
+              {child.badge === 'beta' && (
+                <span style={{ fontSize: 9, padding: '1px 5px', borderRadius: 9999, background: B.amberSoft, color: B.amber, fontWeight: 600 }}>beta</span>
+              )}
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ─── NavLink ──────────────────────────────────────────────────────────────────
 
 function NavLink({ label, href, active, badge }: { label: string; href: string; active: boolean; badge?: string }) {
   return (
